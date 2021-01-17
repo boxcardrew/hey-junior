@@ -5,4 +5,26 @@ export default function Nav() {
     <nav>
       <ul>
         <li className="logo" >HeyJunior</li>
-        <li><Link href="/"><a className="button">Post a job</a></L
+        <li><Link href="/"><a className="button">Post a job</a></Link></li>
+      </ul>
+    
+      <style jsx>{`
+        nav {
+          width: 100%;
+        }
+        ul {
+          list-style: none;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .logo {
+          font-family: 'Lobster', cursive;
+          font-size: 1.5rem;
+        }
+      `}
+      </style>
+    </nav>
+
+  )
+}

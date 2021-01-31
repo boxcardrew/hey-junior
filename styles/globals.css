@@ -7,6 +7,7 @@
   --black: #000;
   --green: #0e9594;
   --dark-green: #127475;
+  --grey: #E5E5E5;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Open+Sans:wght@300;400;700&display=swap');
@@ -86,4 +87,12 @@ a {
   background-color: var(--white);
   color: var(--black);
   border-radius: 8px;
+}
+
+.public-DraftEditorPlaceholder-root {
+  padding: 10px;
+}
+
+.public-DraftEditor-content {
+  min-height: 400px;
 }

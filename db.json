@@ -1,0 +1,30 @@
+{
+  "$schema": {
+    "id": 0,
+    "title": "Software Developer",
+    "category": "Developer",
+    "company": "Facebook",
+    "tags": ["developer", "full-stack", "remote"],
+    "location": {
+      "id": 1,
+      "googlePlaceID": "uEmsRrf4t12uji6Y",
+      "formattedAddress": "123 Main St, Akron, OH 43221",
+      "lat": -33.45612,
+      "long": 133.45612,
+      "Market": "Cleveland-Akron-Canton"
+    },
+    "epoch":"1611352658",
+    "date":"2021-01-22T21:57:38+00:00",
+    "companyLogo": "url(s3.amazon.com/asfasgasgdsah)",
+    "description": "Markdown",
+    "applyURL": "company.net/softwaredevjob",
+    "companyEmail": "john@company.net",
+    "companyStatement": "String",
+    "companyWebsite": "www.company.net",
+    "postingFeatures": {
+      "hasLogo": true,
+      "featured": true,
+      "highlight": true 
+    }
+  }
+}

@@ -8,6 +8,13 @@ const ReactRTE = dynamic(() => import("../components/Editor"), {
   ssr: false,
 });
 
+const Editor = dynamic(
+  () => {
+    return import("../components/DraftEditor");
+  },
+  { loading: () => null, ssr: false }
+);
+
 const BulletPoint = () => (
   <div
     style={{
@@ -71,7 +78,7 @@ export default function JobPostForm() {
     if (!best) {
       setBest(true);
       setBetter(false);
-      setUpgrades(22435);
+      setUpgrades(22436);
     }
   };
 
@@ -133,8 +140,14 @@ export default function JobPostForm() {
               <Field name="jobTitle" type="text" className={styles.input} />
               <ErrorMessage name="jobTitle" />
             </div>
-            <div style={{ display: "flex", alignItems: "center", flexWrap: 'wrap' }}>
-              <div style={{ flex: 1, flexBasis: "300px", marginRight: '2em' }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <div style={{ flex: 1, flexBasis: "300px", marginRight: "2em" }}>
                 <label htmlFor="category" className={styles.label}>
                   Category
                   <BulletPoint />
@@ -149,7 +162,11 @@ export default function JobPostForm() {
                   <option value="Other">Other</option>
                 </Field>
               </div>
-              <div role="group" aria-labelledby="Job-Type" style={{ flexGrow: 1, flexShrink: 1 }}>
+              <div
+                role="group"
+                aria-labelledby="Job-Type"
+                style={{ flexGrow: 1, flexShrink: 1 }}
+              >
                 <div style={{ marginBottom: "2em" }}>
                   <div className={styles.label}>
                     Job Type
@@ -176,16 +193,26 @@ export default function JobPostForm() {
                 </div>
               </div>
             </div>
-            <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
-              <div style={{ flex: 1, flexBasis: "300px", marginRight: '2em' }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <div style={{ flex: 1, flexBasis: "300px", marginRight: "2em" }}>
                 <label htmlFor="location" className={styles.label}>
                   Location
                   <BulletPoint />
                 </label>
                 <Field name="location" className={styles.input} />
               </div>
-              <div role="group" aria-labelledby="Remote" style={{ flexGrow: 1, flexShrink: 1 }}>
-                <div style={{  marginBottom: "2em" }}>
+              <div
+                role="group"
+                aria-labelledby="Remote"
+                style={{ flexGrow: 1, flexShrink: 1 }}
+              >
+                <div style={{ marginBottom: "2em" }}>
                   <div className={styles.label}>
                     Remote Position
                     <BulletPoint />
@@ -224,7 +251,8 @@ export default function JobPostForm() {
                 Job Description
                 <BulletPoint />
               </label>
-              <ReactRTE />
+              {/* <ReactRTE /> */}
+              <Editor />
               <ErrorMessage name="jobDesc" />
             </div>
           </div>
@@ -262,8 +290,16 @@ export default function JobPostForm() {
               />
               <ErrorMessage name="companyStatement" />
             </div>
-            <div style={{ display: "flex", alignItems: "center", flexWrap: 'wrap' }}>
-              <div style={{ flex: "1", marginRight: "1.5em", flexBasis: "300px" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <div
+                style={{ flex: "1", marginRight: "1.5em", flexBasis: "300px" }}
+              >
                 <label htmlFor="companyWebsite" className={styles.label}>
                   Company Website
                   <BulletPoint />
@@ -365,7 +401,7 @@ export default function JobPostForm() {
               </div>
               <div className="bottom-card">
                 <button type="submit" className="button">
-                  Submit
+                  Continue to Payment
                 </button>
               </div>
             </div>

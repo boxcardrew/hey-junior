@@ -65,6 +65,7 @@ export default function Posting(props) {
           <div>
             <span>email:</span> <a href="info@company.net">hr@company.com</a>
           </div>
+          <Link href="/job"><a>View Job Posting</a></Link>
         </div>
       </div>
 

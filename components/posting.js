@@ -1,71 +1,66 @@
 import Link from "next/link";
 
-export default function Posting(props) {
+const getDate = (date) => {
+  const created = new Date(date);
+  const options = { month: "short", day: "numeric" };
+  return created.toLocaleDateString("en-us", options);
+};
+
+const createMarkup = (desc) => {
+  return { _html: desc };
+};
+
+export default function Posting({ post }) {
   return (
-    <details className={props.featured ? "featured" : ""}>
+    <details className={post.featured ? "featured" : ""}>
       <summary>
-        <div className={props.featured ? "card featured" : "card"}>
-          <div className="logo">
-            <div className="img-default">FB</div>
-          </div>
-          <div className="company">
-            <h4>React Native Developer</h4>
-            <div className="company-location">
-              <p>Facebook Group</p>
-              <p>US - San Francisco</p>
+        <div className={post.featured ? "card featured" : "card"}>
+          
+            <div className="logo">
+              <div className="img-default"><img src={`//logo.clearbit.com/${post.companyWebsite}?size=50`} /></div>
             </div>
-          </div>
+            <div className="company">
+              <h4>{post.title}</h4>
+              <div className="company-location">
+                <p>{post.company}</p>
+                <p>{post.location.location.city}</p>
+              </div>
+            </div>
+
           <div className="tags">
-            <span>Swift</span>
-            <span>Java</span>
+            {post.tags.map((tag) => (
+              <span key={tag}>{tag}</span>
+            ))}
           </div>
           <div className="date">
-            <span>Dec 30</span>
+            {post.featured ? (
+              <span>Featured</span>
+            ) : (
+              <span>{getDate(post.createdAt)}</span>
+            )}
           </div>
           <div className="apply">
-            <Link href="/jobid">
-              <a className={props.featured ? "button light" : "button"}>
+            
+              <a href={post.applyURL} className={post.featured ? "button light" : "button"}>
                 Apply Now
               </a>
-            </Link>
+            
           </div>
         </div>
       </summary>
       <div className="details">
-        <h4>About us</h4>
-        <p>
-          We are the company behind very popular open-source tools for ML
-          workflow- DVC and CML. We're a well-funded, remote-first team on a
-          missing to solve the complexity of managing datasets, ML
-          infrastructure, ML models lifecycle management.
-        </p>
-        <h4>Learn more:</h4>
-        <p>
-          <ul>
-            <li>Check out our GitHub</li>
-            <li>Check out the Website and Docs </li>
-            <li>Finally, take a look at our Blog and YouTube</li>
-          </ul>
-          <h4>What we offer:</h4>
-          Team is distributed remotely worldwide. You will be one of the first
-          employees for the DVC core team. Highly competitive salary, stock
-          options, and bonuses. Open source-first company- you work will be
-          visible and will be used by thousands developers every day! This feels
-          great! Check out our Discord and GitHub. Founders and team with strong
-          engineering, data science, and open source experience. We all code and
-          understand engineering first-hand. Engineering team is involved into
-          product discussions and planning. We do it openly via Github or
-          Discord chat. Besides building the product we participate in
-          conferences (PyCon, PyData, O'Reilly AI, etc). We encourage and
-          support the team in giving talks, writing blog-posts, and other
-          activities. Well-defined process that we all participate in improving.
-        </p>
+        <div
+          className="description"
+          dangerouslySetInnerHTML={{ __html: post.description }}
+        />
         <div className="contact">
-          <a className="button">Apply Now</a>
+          <a className="button" href={post.applyURL}>Apply Now</a>
           <div>
-            <span>email:</span> <a href="info@company.net">hr@company.com</a>
+            <span>email:</span> <a href={`mailto:${post.companyEmail}?subject=Job Posting on HeyJunior`}>{post.companyEmail}</a>
           </div>
-          <Link href="/job"><a>View Job Posting</a></Link>
+          <Link href={"/jobs/" + post.id}>
+            <a>View Job Posting</a>
+          </Link>
         </div>
       </div>
 
@@ -87,12 +82,12 @@ export default function Posting(props) {
           max-width: 75%;
           margin: 0 auto;
         }
-        .details p,
-        .details ul,
+        .description p,
+        .description ul,
         .contact .button {
           margin-bottom: 1.5em;
         }
-        .details p:last-of-type {
+        .description p:last-of-type {
           margin-bottom: 3.5em;
         }
 
@@ -106,13 +101,13 @@ export default function Posting(props) {
           position: relative;
           background: var(--light-yellow);
           width: 100%;
-          display: flex;
           padding: 0.5em 1em;
           border-radius: 8px;
           min-height: 90px;
-          justify-content: space-between;
           align-items: center;
           margin-bottom: 1.5em;
+          display: grid;
+          grid-template-columns: 5em 3fr 1fr 1fr 1fr;
         }
         .img-default {
           background: var(--orange);
@@ -126,8 +121,11 @@ export default function Posting(props) {
           font-weight: 700;
           color: var(--white);
         }
+        .logo {
+          
+        }
         .company {
-          margin-left: -48px;
+          
         }
         .company * {
           margin-bottom: 0.25em;
@@ -137,24 +135,28 @@ export default function Posting(props) {
         }
         .date {
           font-size: 0.875rem;
+          
+          text-align: center;
         }
         .company p:last-of-type {
           font-weight: 300;
         }
         .tags span {
           padding: 1px 0.5em;
-          margin-right: 0.5em;
+          margin-right: 1em;
           border: 2px solid var(--text);
           font-size: 12px;
           border-radius: 4px;
           color: var(--text);
-
+          
           margin-bottom: 0.25em;
         }
         .tags {
           display: flex;
           max-width: 100px;
-          flex-wrap: wrap;
+        }
+        .apply {
+          margin-left: auto;
         }
         .featured.card {
           background: var(--orange);
@@ -180,15 +182,23 @@ export default function Posting(props) {
           .apply {
             display: none;
           }
+          .date {
+            grid-column: 5/-1;
+            grid-row: 1/3;
+          }
+          .card {
+            grid-template-columns: 1fr 3fr 1fr 1fr 1fr;
+          }
         }
         @media only screen and (max-width: 601px) {
           .card {
             display: grid;
-            grid-template: auto / 1fr 50px;
+            padding: 0.5em;
+            grid-gap: 0 0.5em;
           }
 
           .logo {
-            display: none;
+            grid-row: 1/3;
           }
           .company {
             margin-left: 0px;
@@ -200,12 +210,11 @@ export default function Posting(props) {
             margin-right: 0.5em;
           }
           .tags {
-            grid-column: 1/2;
+           grid-column: 2/3;
           }
-          .date {
-            grid-column: 2/3;
-            grid-row: 1/2;
-            align-self: end;
+          x
+          .details {
+            max-width: 85%;
           }
         }
       `}</style>

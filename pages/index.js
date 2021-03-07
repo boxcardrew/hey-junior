@@ -1,6 +1,5 @@
 import Head from "next/head";
 import Nav from "../components/nav";
-
 import styles from "../styles/Home.module.css";
 import Search from "../components/search";
 import Menu from "../components/menu";
@@ -9,7 +8,24 @@ import Hiring from "../components/hiring";
 import Posting from "../components/posting";
 import Title from "../components/title";
 
-export default function Home() {
+import prisma from '../lib/prisma'
+
+
+
+export async function getStaticProps() {
+  const jobs = await prisma.jobPosting.findMany({
+    orderBy: [
+      { featured: 'desc' },
+      { createdAt: 'desc' }
+    ]
+  })
+  return {
+    props : { jobs }
+  }
+}
+
+const Home = ( {jobs} ) => {
+  
   return (
     <div className={styles.container}>
       <Head>
@@ -63,7 +79,12 @@ export default function Home() {
           </h3>
           <div>
             <ul>
-              <li>
+              {jobs.map((post) => (
+                <li key={post.id}>
+                  <Posting post={post} />
+                </li>
+              ))}
+              {/* <li>
                 <Posting featured="true" />
               </li>
               <li>
@@ -83,7 +104,7 @@ export default function Home() {
               </li>
               <li>
                 <Posting />
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
@@ -96,3 +117,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default Home;

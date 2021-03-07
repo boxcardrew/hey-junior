@@ -25,9 +25,10 @@
   color: var(--black);
   border-radius: 8px;
   width: 100%;
-  margin-bottom: 2em;
   margin-top: .25em;
 }
+
+
 
 .select {
   background-image: url("/icons/expand.svg");
@@ -42,5 +43,9 @@
 }
 
 .last {
+  margin-bottom: 2em;
+}
+
+.inputDiv {
   margin-bottom: 2em;
 }

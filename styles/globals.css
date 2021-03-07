@@ -7,16 +7,16 @@
   --black: #000;
   --green: #0e9594;
   --dark-green: #127475;
-  --grey: #E5E5E5;
+  --grey: #e5e5e5;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Lobster&family=Open+Sans:wght@300;400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lobster&family=Open+Sans:wght@300;400;700&display=swap");
 
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   background-color: #f5dfbb;
   color: #562c2c;
 }
@@ -27,7 +27,7 @@ input,
 optgroup,
 select,
 textarea {
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 a {
@@ -95,4 +95,18 @@ a {
 
 .public-DraftEditor-content {
   min-height: 400px;
+}
+
+.StripeElement {
+  width: 100%;
+  padding: 0 1em;
+}
+
+.description p,
+.description ul,
+.contact .button {
+  margin-bottom: 1.5em;
+}
+.description p:last-of-type {
+  margin-bottom: 3.5em;
 }

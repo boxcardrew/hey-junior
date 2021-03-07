@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import Nav from "../components/nav";
-import Posting from "../components/posting";
+// import Posting from "../components/posting";
 
 export default function Post() {
   const category = "Developer";
@@ -153,9 +153,9 @@ export default function Post() {
             <h4>Related Jobs</h4>
             <span>See More {category} Jobs</span>
           </div>
+          {/* <Posting />
           <Posting />
-          <Posting />
-          <Posting />
+          <Posting /> */}
         </div>
       </div>
       <style jsx>{`

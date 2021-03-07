@@ -3,6 +3,9 @@ import * as Yup from "yup";
 import styles from "../styles/JobPostForm.module.css";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import { fetchPostJSON } from "../utils/api-helpers"
+
+import {CardElement, useElements, useStripe} from '@stripe/react-stripe-js';
 
 const ReactRTE = dynamic(() => import("../components/Editor"), {
   ssr: false,
@@ -14,6 +17,22 @@ const Editor = dynamic(
   },
   { loading: () => null, ssr: false }
 );
+
+const BASIC = "price_1IM4zADN3w6TabsRUEtBLB9g";
+const STANDARD = "price_1IM523DN3w6TabsRAr5UUGnR";
+const PREMIUM = "price_1IM52PDN3w6TabsR1tvlKCVK";
+
+const cardElementOptions = {
+  style: {
+    base: {
+      fontSize: "16px",
+    },
+    invalid: {
+      color: "#f2542d",
+      iconColor: "#f2542d"
+    }
+  }
+}
 
 const BulletPoint = () => (
   <div
@@ -53,11 +72,22 @@ const CheckMark = ({ color }) => (
   </span>
 );
 
+const PrintObject = ({ content }) => {
+  const formatContent = JSON.stringify(content, null, 2)
+  return <pre>{formatContent}</pre>
+}
+
 export default function JobPostForm() {
   const [better, setBetter] = useState(true);
   const [best, setBest] = useState(false);
   const [total, setTotal] = useState(225);
   const [upgades, setUpgrades] = useState();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [payment, setPayment] = useState({ status: 'Initial' });
+  const [priceId, setPriceId] = useState(BASIC);
+
+  const stripe = useStripe()
+  const elements = useElements()
 
   const selectBetter = () => {
     if (better) {
@@ -82,39 +112,86 @@ export default function JobPostForm() {
     }
   };
 
+  const handleSubmit = async (values) => {
+
+
+    //Check if form is valid
+    setIsProcessing(true)
+
+    //Create PaymentIntent with amount from items
+    const response = await fetchPostJSON('/api/payment_intents', {
+      priceId: priceId,
+      email: values.companyEmail,
+      metadata: {
+        email: values.companyEmail,
+        jobTitle: values.jobTitle,
+        company: values.company,
+      } 
+    })
+    setPayment(response)
+
+    if (response.statusCode === 500) {
+      setPayment({ status: 'error' })
+      //Set Error Message
+      return
+    }
+
+    //Get a ref to the CardElement
+    const cardElement = elements.getElement(CardElement)
+
+    //Use CardElement to process payment
+    const { error, paymentIntent } = await stripe.confirmCardPayment(
+      response.client_secret,
+      {
+        payment_method: {
+          card: cardElement,
+        }
+      }
+    )
+    
+    if (error) {
+      setPayment({ status: 'error' })
+      //Set error message
+    } else if (paymentIntent) {
+      setPayment(paymentIntent)
+      setIsProcessing(false)
+      alert(JSON.stringify(values, null, 2));
+      // Send to success page
+    }
+  }
+
   useEffect(() => {
     if (!better && !best) {
-      setTotal(225);
+      setTotal(99);
+      setPriceId(BASIC)
     }
     if (better) {
-      setTotal(260);
+      setTotal(134);
+      setPriceId(STANDARD)
     }
     if (best) {
-      setTotal(290);
+      setTotal(164);
+      setPriceId(PREMIUM)
     }
   }, [better, best]);
+
 
   return (
     <div>
       <Formik
-        initialValues={{ firstName: "", lastName: "", email: "" }}
+        initialValues={{ jobTitle: "", category: "", location: "", companyEmail: "" }}
         validationSchema={Yup.object({
-          firstName: Yup.string()
-            .max(15, "Must be 15 characters or less")
-            .required("Required"),
-          lastName: Yup.string()
-            .max(20, "Must be 20 characters or less")
-            .required("Required"),
-          email: Yup.string()
-            .email("Invalid email address")
-            .required("Required"),
+          jobTitle: Yup.string()
+            .min(10, "Must be 10 characters or more"),
+            // .required("Required"),
+          location: Yup.string()
+            .min(5, "Must be 5 characters or more"),
+            // .required("Required"),
+          howToApply: Yup.string()
+            .url("Invalid URL"),
+            // .required("Required"),
         })}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            setSubmitting(false);
-          }, 400);
-        }}
+        onSubmit={handleSubmit}
       >
         <Form className={styles.postForm}>
           <div className="form">
@@ -132,13 +209,13 @@ export default function JobPostForm() {
                 <BulletPoint />
               </span>
             </div>
-            <div>
+            <div className={styles.inputDiv}>
               <label htmlFor="jobTitle" className={styles.label}>
                 Job Title
                 <BulletPoint />
               </label>
               <Field name="jobTitle" type="text" className={styles.input} />
-              <ErrorMessage name="jobTitle" />
+              <ErrorMessage component="span" name="jobTitle" style={{ color: "var(--orange)", fontSize: ".875em", fontWeight: "700", marginBottom: "1em" }} />
             </div>
             <div
               style={{
@@ -146,6 +223,7 @@ export default function JobPostForm() {
                 alignItems: "center",
                 flexWrap: "wrap",
               }}
+              className={styles.inputDiv}
             >
               <div style={{ flex: 1, flexBasis: "300px", marginRight: "2em" }}>
                 <label htmlFor="category" className={styles.label}>
@@ -199,6 +277,7 @@ export default function JobPostForm() {
                 alignItems: "center",
                 flexWrap: "wrap",
               }}
+              className={styles.inputDiv}
             >
               <div style={{ flex: 1, flexBasis: "300px", marginRight: "2em" }}>
                 <label htmlFor="location" className={styles.label}>
@@ -206,6 +285,7 @@ export default function JobPostForm() {
                   <BulletPoint />
                 </label>
                 <Field name="location" className={styles.input} />
+                <ErrorMessage name="location" />
               </div>
               <div
                 role="group"
@@ -399,15 +479,20 @@ export default function JobPostForm() {
               <div className="bottom-card">
                 <span className="total">Total: ${total}</span>
               </div>
+              <div className="cardContainer">
+                <CardElement options={cardElementOptions}/>
+              </div>
               <div className="bottom-card">
-                <button type="submit" className="button">
-                  Continue to Payment
+                <button type="submit" className="button payButton" disabled={isProcessing}>
+                  {isProcessing ? "Processing..." : "Post your job"}
                 </button>
               </div>
             </div>
           </div>
         </Form>
       </Formik>
+
+      <PrintObject content={payment} />
       <style jsx>{`
       .form, .pricing {
           background: var(--light-yellow);
@@ -437,16 +522,32 @@ export default function JobPostForm() {
         margin-right: 2em;
         flex-wrap: wrap;
       }
+      .cardContainer {
+        padding: 1em 0;
+        background: #fff;
+        border-radius: 8px;
+      }
+
+      
       .bottom-cards {
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
         margin-bottom: 2em;
         margin-left: 2em;
         margin-right: 2em;
         flex-wrap: wrap;
         gap: 2em;
       }
-      
+      .payButton {
+        width: 100%;
+        padding-top: .75em;
+        padding-bottom: .75em;
+      }
+      .payButton:disabled, .payButton[disabled] {
+        background: rgba(242, 84, 45, .75);
+        border: transparent 2px solid;
+        cursor: not-allowed;
+      }
       .card {
         flex: 1;
         padding: 1em;

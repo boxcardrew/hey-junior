@@ -1,17 +1,23 @@
+import Head from "next/head";
 import JobPostForm from "../components/JobPostForm";
 import Nav from "../components/nav";
+import PostLayout from "../components/PostLayout";
 
 export default function Post() {
   return (
     <div className="container">
+      <Head>
+        <title>Post a new job | HeyJunior</title>
+      </Head>
       <main className="main">
         <Nav />
         <div className="title">
           <h1>Junior Prices For Junior Jobs</h1>
         </div>
         <section>
-          
+          <PostLayout>
             <JobPostForm />
+          </PostLayout>
           
         </section>
       </main>

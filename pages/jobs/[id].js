@@ -1,20 +1,46 @@
+import prisma from "../../lib/prisma";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import Nav from "../components/nav";
-import Posting from "../components/posting";
+import Nav from "../../components/nav";
+import getDate from "../../utils/getDate";
 
-export default function Post() {
+// import Posting from "../../components/posting";
+
+export const getServerSideProps = async ({ params }) => {
+  const post = await prisma.jobPosting.findUnique({
+    where: {
+      id: Number(params?.id) || -1,
+    },
+  });
+  return {
+    props: post,
+  };
+};
+
+export default function Post(props) {
+  console.log(props);
   const category = "Developer";
   const share = [
-    {name: "Share", src: "/icons/share.svg", url: "/", shareData: { title: "Job from HeyJunior", text: "Check out this job posting from HeyJunior", url: "window.location" }},
-    {name: "Share to Linked In", src: "/icons/cib_linkedin.svg", url: "/"},
-    {name: "Share to Twitter", src: "/icons/cib_twitter.svg", url: "/"}
-  ]
+    {
+      name: "Share",
+      src: "/icons/share.svg",
+      url: "/",
+      shareData: {
+        title: "Job from HeyJunior",
+        text: "Check out this job posting from HeyJunior",
+        url: "window.location",
+      },
+    },
+    { name: "Share to Linked In", src: "/icons/cib_linkedin.svg", url: "/" },
+    { name: "Share to Twitter", src: "/icons/cib_twitter.svg", url: "/" },
+  ];
   return (
     <div className="container">
       <Head>
-        <title>This is the Job Posting | HeyJunior</title>
+        <title>
+          {props.title} - {props.company} | HeyJunior
+        </title>
       </Head>
       <div className="main">
         <Nav />
@@ -29,101 +55,55 @@ export default function Post() {
         <section className="section">
           <div className="grid">
             <article>
-              <span>Posted Jan 1</span>
-              <h1>Job Title</h1>
-              <span>Location, NB</span>
-              <div>
-                <span>ui/ux</span>
-                <span>ui/ux</span>
-                <span>ui/ux</span>
-                <span>ui/ux</span>
+              <span>Posted {getDate(props.createdAt)}</span>
+              <h1 className="title">{props.title}</h1>
+              <div className="location">
+                  <Image
+                    src="/icons/place.svg"
+                    alt={props.location.location.city}
+                    width={24}
+                    height={24}
+                  />
+                <span>
+                  {props.location.location.city}
+                </span>
+              </div>
+              <div className="tags">
+                {props.tags.map((tag) => (
+                  <span key={tag}>{tag} </span>
+                ))}
               </div>
               <div className="mobile-company">
-                <h3>Google Inc.</h3>
+                <h3>{props.company}</h3>
               </div>
               <div>
-                <h4>About us</h4>
-                <p>
-                  We are the company behind very popular open-source tools for
-                  ML workflow- DVC and CML. We're a well-funded, remote-first
-                  team on a missing to solve the complexity of managing
-                  datasets, ML infrastructure, ML models lifecycle management.
-                </p>
-                <h4>Learn more:</h4>
-                <p>
-                  <ul>
-                    <li>Check out our GitHub</li>
-                    <li>Check out the Website and Docs </li>
-                    <li>Finally, take a look at our Blog and YouTube</li>
-                  </ul>
-                  <h4>What we offer:</h4>
-                  Team is distributed remotely worldwide. You will be one of the
-                  first employees for the DVC core team. Highly competitive
-                  salary, stock options, and bonuses. Open source-first company-
-                  you work will be visible and will be used by thousands
-                  developers every day! This feels great! Check out our Discord
-                  and GitHub. Founders and team with strong engineering, data
-                  science, and open source experience. We all code and
-                  understand engineering first-hand. Engineering team is
-                  involved into product discussions and planning. We do it
-                  openly via Github or Discord chat. Besides building the
-                  product we participate in conferences (PyCon, PyData, O'Reilly
-                  AI, etc). We encourage and support the team in giving talks,
-                  writing blog-posts, and other activities. Well-defined process
-                  that we all participate in improving.
-                </p>
-                <h4>About us</h4>
-                <p>
-                  We are the company behind very popular open-source tools for
-                  ML workflow- DVC and CML. We're a well-funded, remote-first
-                  team on a missing to solve the complexity of managing
-                  datasets, ML infrastructure, ML models lifecycle management.
-                </p>
-                <h4>Learn more:</h4>
-                <p>
-                  <ul>
-                    <li>Check out our GitHub</li>
-                    <li>Check out the Website and Docs </li>
-                    <li>Finally, take a look at our Blog and YouTube</li>
-                  </ul>
-                  <h4>What we offer:</h4>
-                  Team is distributed remotely worldwide. You will be one of the
-                  first employees for the DVC core team. Highly competitive
-                  salary, stock options, and bonuses. Open source-first company-
-                  you work will be visible and will be used by thousands
-                  developers every day! This feels great! Check out our Discord
-                  and GitHub. Founders and team with strong engineering, data
-                  science, and open source experience. We all code and
-                  understand engineering first-hand. Engineering team is
-                  involved into product discussions and planning. We do it
-                  openly via Github or Discord chat. Besides building the
-                  product we participate in conferences (PyCon, PyData, O'Reilly
-                  AI, etc). We encourage and support the team in giving talks,
-                  writing blog-posts, and other activities. Well-defined process
-                  that we all participate in improving.
-                </p>
+                <div
+                  className="description"
+                  dangerouslySetInnerHTML={{ __html: props.description }}
+                />
               </div>
               <div className="apply">
-                <a href="*" className="button">
+                <a href={props.applyURL} className="button">
                   Apply Now
                 </a>
                 <div className="share">
                   <span className="block">Share this Job:</span>
-                  {share.map (social => (
-                    <button onClick={async () => {
-                      try {
-                        await navigator.share(social.shareData)
-                      } catch(err) {
-                        console.log(err)
-                      }
-                    }
-                    }>
+                  {share.map((social) => (
+                    <button
+                      onClick={async () => {
+                        try {
+                          await navigator.share(social.shareData);
+                        } catch (err) {
+                          console.log(err);
+                        }
+                      }}
+                    >
                       <Image
                         src={`${social.src}`}
                         alt={`${social.name}`}
                         width={24}
                         height={24}
-                      />  
+                      />
                     </button>
                   ))}
                 </div>
@@ -139,12 +119,17 @@ export default function Post() {
               </div>
             </article>
             <aside>
-              <div className="img-default">FB</div>
-              <span>Company</span>
-              <a href="https://www.google.com" target="_">
-                View Website
+              
+              <div className="img-default"><img src={`//logo.clearbit.com/${props.companyWebsite}?size=50`} /></div>
+              <span>{props.company}</span>
+              {props.companyWebsite ? (
+                <a href={`https://${props.companyWebsite}`} target="_">
+                  View Website
+                </a>
+              ) : null}
+              <a className="button" href={props.applyURL}>
+                Apply Now
               </a>
-              <a className="button">Apply Now</a>
             </aside>
           </div>
         </section>
@@ -153,9 +138,9 @@ export default function Post() {
             <h4>Related Jobs</h4>
             <span>See More {category} Jobs</span>
           </div>
+          {/* <Posting />
           <Posting />
-          <Posting />
-          <Posting />
+          <Posting /> */}
         </div>
       </div>
       <style jsx>{`
@@ -194,6 +179,25 @@ export default function Post() {
         }
         .maintain a {
           align-self: flex-end;
+        }
+        article .location {
+          display: flex;
+          height: 24px;
+          align-items: center;
+          margin-bottom: .5em;
+        }
+        article .title {
+          margin-bottom: 0em;
+        }
+        .tags span {
+          padding: 1px 0.5em;
+          margin-right: 1em;
+          border: 2px solid var(--text);
+          font-size: 12px;
+          border-radius: 4px;
+          color: var(--text);
+          
+          margin-bottom: 0.25em;
         }
         .similar {
           width: 100%;
@@ -263,11 +267,11 @@ export default function Post() {
           margin-bottom: 0;
           text-align: right;
         }
-        .share a {
+        .share button {
           margin-left: 1em;
         }
         .block {
-          margin-bottom: .5em;
+          margin-bottom: 0.5em;
           display: block;
           font-weight: 700;
         }
@@ -301,9 +305,9 @@ export default function Post() {
             padding: 2em 0.5em;
           }
           .page-nav span,
-        .page-nav a {
-          font-size: .625rem;
-        }
+          .page-nav a {
+            font-size: 0.625rem;
+          }
         }
       `}</style>
     </div>

@@ -1,11 +1,21 @@
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import {
+  Formik,
+  Field,
+  Form,
+  ErrorMessage,
+  useField,
+  useFormikContext,
+} from "formik";
 import * as Yup from "yup";
 import styles from "../styles/JobPostForm.module.css";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { fetchPostJSON } from "../utils/api-helpers"
+import { fetchPostJSON } from "../utils/api-helpers";
+import { EditorState } from "draft-js";
+import { convertToHTML } from "draft-convert";
 
-import {CardElement, useElements, useStripe} from '@stripe/react-stripe-js';
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import ExamplePosting from "./examplePost";
 
 const ReactRTE = dynamic(() => import("../components/Editor"), {
   ssr: false,
@@ -29,10 +39,10 @@ const cardElementOptions = {
     },
     invalid: {
       color: "#f2542d",
-      iconColor: "#f2542d"
-    }
-  }
-}
+      iconColor: "#f2542d",
+    },
+  },
+};
 
 const BulletPoint = () => (
   <div
@@ -73,9 +83,9 @@ const CheckMark = ({ color }) => (
 );
 
 const PrintObject = ({ content }) => {
-  const formatContent = JSON.stringify(content, null, 2)
-  return <pre>{formatContent}</pre>
-}
+  const formatContent = JSON.stringify(content, null, 2);
+  return <pre>{formatContent}</pre>;
+};
 
 export default function JobPostForm() {
   const [better, setBetter] = useState(true);
@@ -83,11 +93,30 @@ export default function JobPostForm() {
   const [total, setTotal] = useState(225);
   const [upgades, setUpgrades] = useState();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [payment, setPayment] = useState({ status: 'Initial' });
+  const [payment, setPayment] = useState({ status: "Initial" });
   const [priceId, setPriceId] = useState(BASIC);
 
-  const stripe = useStripe()
-  const elements = useElements()
+  // const [editorState, setEditorState] = useState(
+  //   () => EditorState.createEmpty(),
+  // )
+  const [convertedContent, setConvertedContent] = useState(null);
+
+  // const handleEditorChange = (state) => {
+  //   setEditorState(state);
+  //   convertContentToHTML();
+  // }
+
+  // const convertContentToHTML = () => {
+  //   let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
+  //   setConvertedContent(currentContentAsHTML);
+  // }
+
+  // const createMarkup = (html) => {
+  //   return {__html: html}
+  // }
+
+  const stripe = useStripe();
+  const elements = useElements();
 
   const selectBetter = () => {
     if (better) {
@@ -113,31 +142,29 @@ export default function JobPostForm() {
   };
 
   const handleSubmit = async (values) => {
-
-
     //Check if form is valid
-    setIsProcessing(true)
+    setIsProcessing(true);
 
     //Create PaymentIntent with amount from items
-    const response = await fetchPostJSON('/api/payment_intents', {
+    const response = await fetchPostJSON("/api/payment_intents", {
       priceId: priceId,
       email: values.companyEmail,
       metadata: {
         email: values.companyEmail,
         jobTitle: values.jobTitle,
         company: values.company,
-      } 
-    })
-    setPayment(response)
+      },
+    });
+    setPayment(response);
 
     if (response.statusCode === 500) {
-      setPayment({ status: 'error' })
+      setPayment({ status: "error" });
       //Set Error Message
-      return
+      return;
     }
 
     //Get a ref to the CardElement
-    const cardElement = elements.getElement(CardElement)
+    const cardElement = elements.getElement(CardElement);
 
     //Use CardElement to process payment
     const { error, paymentIntent } = await stripe.confirmCardPayment(
@@ -145,351 +172,496 @@ export default function JobPostForm() {
       {
         payment_method: {
           card: cardElement,
-        }
+        },
       }
-    )
-    
+    );
+
     if (error) {
-      setPayment({ status: 'error' })
+      setPayment({ status: "error" });
       //Set error message
     } else if (paymentIntent) {
-      setPayment(paymentIntent)
-      setIsProcessing(false)
+      setPayment(paymentIntent);
+      setIsProcessing(false);
       alert(JSON.stringify(values, null, 2));
       // Send to success page
     }
-  }
+  };
 
   useEffect(() => {
     if (!better && !best) {
       setTotal(99);
-      setPriceId(BASIC)
+      setPriceId(BASIC);
     }
     if (better) {
       setTotal(134);
-      setPriceId(STANDARD)
+      setPriceId(STANDARD);
     }
     if (best) {
       setTotal(164);
-      setPriceId(PREMIUM)
+      setPriceId(PREMIUM);
     }
   }, [better, best]);
 
+  const TextInput = ({ label, required, ...props }) => {
+    const [field, meta] = useField(props);
+    return (
+      <>
+        <label htmlFor={props.id || props.name} className={styles.label}>
+          {label}
+        </label>
+        {required ? <BulletPoint /> : null}
+        <input className={styles.input} {...field} {...props} />
+        {meta.touched && meta.error ? (
+          <div
+            style={{
+              color: "var(--orange)",
+              fontSize: ".875em",
+              fontWeight: "700",
+              marginBottom: ".5em",
+              height: "1.25em",
+              lineHeight: 1,
+            }}
+          >
+            {meta.error}
+          </div>
+        ) : (
+          <div
+            style={{ content: " ' ' ", height: "17.5px", marginBottom: ".5em" }}
+          ></div>
+        )}
+      </>
+    );
+  };
+
+  const SelectInput = ({ label, required, ...props }) => {
+    const [field, meta] = useField(props);
+    return (
+      <>
+        <label htmlFor={props.id || props.name} className={styles.label}>
+          {label}
+        </label>
+        {required ? <BulletPoint /> : null}
+        <select className={styles.select} {...field} {...props} />
+        {meta.touched && meta.error ? (
+          <div
+            style={{
+              color: "var(--orange)",
+              fontSize: ".875em",
+              fontWeight: "700",
+              marginBottom: ".5em",
+              height: "1.25em",
+              lineHeight: 1,
+            }}
+          >
+            {meta.error}
+          </div>
+        ) : (
+          <div
+            style={{ content: " ' ' ", height: "17.5px", marginBottom: ".5em" }}
+          ></div>
+        )}
+      </>
+    );
+  };
+
+  const FocusError = () => {
+    const { errors, isSubmitting, isValidating } = useFormikContext();
+
+    useEffect(() => {
+      if (isSubmitting && !isValidating) {
+        let keys = Object.keys(errors);
+        if (keys.length > 0) {
+          const selector = `[name=${keys[0]}]`;
+          const errorElement = document.querySelector(selector);
+          if (errorElement) {
+            errorElement.focus();
+          }
+        }
+      }
+    }, [errors, isSubmitting, isValidating]);
+
+    return null;
+  };
 
   return (
     <div>
       <Formik
-        initialValues={{ jobTitle: "", category: "", location: "", companyEmail: "" }}
+        initialValues={{
+          jobTitle: "",
+          category: "",
+          location: "",
+          jobDescription: "",
+          jobType: "",
+          howToApply: "http://",
+          remotePosition: "",
+          companyName: "",
+          companyStatement: "",
+          companyWebsite: "http://",
+          companyEmail: "",
+          companyLogo: "",
+        }}
         validationSchema={Yup.object({
           jobTitle: Yup.string()
-            .min(10, "Must be 10 characters or more"),
-            // .required("Required"),
-          location: Yup.string()
-            .min(5, "Must be 5 characters or more"),
-            // .required("Required"),
-          howToApply: Yup.string()
-            .url("Invalid URL"),
-            // .required("Required"),
+            .min(10, "A little more description, try 10 chracters or more")
+            .required("Required"),
+          location: Yup.string().min(3, "Please Enter a Valid Location"),
+          // .required("Required"),
+          howToApply: Yup.string().url("Enter a valid URL"),
+          // .required("Required"),
+          jobDescription: Yup.string().min(
+            10,
+            "Please enter a job description"
+          ),
+          // .required("Required"),
+          category: Yup.string()
+            .oneOf(
+              [
+                "Develop",
+                "Design",
+                "Marketing",
+                "Sales",
+                "Support",
+                "Finance",
+                "Other",
+              ],
+              "Invalid Job Type"
+            )
+            .required("Required"),
+          jobType: Yup.string().required("Please select a Job Type"),
+          jobType: Yup.string().required("Please select a Job Type"),
+          jobType: Yup.string().required("Please select a Job Type"),
         })}
         onSubmit={handleSubmit}
       >
-        <Form className={styles.postForm}>
-          <div className="form">
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "2em",
-              }}
-            >
-              <h2>Tell us about the position</h2>
-              <span style={{ fontSize: ".875em" }}>
-                Required
-                <BulletPoint />
-              </span>
-            </div>
-            <div className={styles.inputDiv}>
-              <label htmlFor="jobTitle" className={styles.label}>
-                Job Title
-                <BulletPoint />
-              </label>
-              <Field name="jobTitle" type="text" className={styles.input} />
-              <ErrorMessage component="span" name="jobTitle" style={{ color: "var(--orange)", fontSize: ".875em", fontWeight: "700", marginBottom: "1em" }} />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                flexWrap: "wrap",
-              }}
-              className={styles.inputDiv}
-            >
-              <div style={{ flex: 1, flexBasis: "300px", marginRight: "2em" }}>
-                <label htmlFor="category" className={styles.label}>
-                  Category
-                  <BulletPoint />
-                </label>
-                <Field name="category" as="select" className={styles.select}>
-                  <option value="Develop">Develop</option>
-                  <option value="Design">Design</option>
-                  <option value="Marketing">Marketing</option>
-                  <option value="Sales">Sales</option>
-                  <option value="Support">Support</option>
-                  <option value="Finance">Finance</option>
-                  <option value="Other">Other</option>
-                </Field>
-              </div>
+        {({ setFieldValue, setTouched, touched, values }) => (
+          <Form className={styles.postForm}>
+            <div className="form">
               <div
-                role="group"
-                aria-labelledby="Job-Type"
-                style={{ flexGrow: 1, flexShrink: 1 }}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "2em",
+                }}
               >
-                <div style={{ marginBottom: "2em" }}>
-                  <div className={styles.label}>
-                    Job Type
-                    <BulletPoint />
-                  </div>
-                  <label style={{ marginRight: "1em" }}>
-                    <Field
-                      type="radio"
-                      name="jobType"
-                      value="full-time"
-                      style={{ marginRight: ".5em" }}
-                    />
-                    Full-Time
-                  </label>
-                  <label>
-                    <Field
-                      type="radio"
-                      name="jobType"
-                      value="contract"
-                      style={{ marginRight: ".5em" }}
-                    />
-                    Contract
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                flexWrap: "wrap",
-              }}
-              className={styles.inputDiv}
-            >
-              <div style={{ flex: 1, flexBasis: "300px", marginRight: "2em" }}>
-                <label htmlFor="location" className={styles.label}>
-                  Location
+                <h2>Tell us about the position</h2>
+                <span style={{ fontSize: ".875em" }}>
+                  Required
                   <BulletPoint />
-                </label>
-                <Field name="location" className={styles.input} />
-                <ErrorMessage name="location" />
-              </div>
-              <div
-                role="group"
-                aria-labelledby="Remote"
-                style={{ flexGrow: 1, flexShrink: 1 }}
-              >
-                <div style={{ marginBottom: "2em" }}>
-                  <div className={styles.label}>
-                    Remote Position
-                    <BulletPoint />
-                  </div>
-                  <label style={{ marginRight: "1em" }}>
-                    <Field
-                      type="radio"
-                      name="remote"
-                      value="true"
-                      style={{ marginRight: ".5em" }}
-                    />
-                    Yes
-                  </label>
-                  <label>
-                    <Field
-                      type="radio"
-                      name="remote"
-                      value="false"
-                      style={{ marginRight: ".5em" }}
-                    />
-                    No
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div>
-              <label htmlFor="howToApply" className={styles.label}>
-                How to Apply
-                <BulletPoint />
-              </label>
-              <Field name="howToApply" type="text" className={styles.input} />
-              <ErrorMessage name="howToApply" />
-            </div>
-            <div className="last">
-              <label htmlFor="jobDesc" className={styles.label}>
-                Job Description
-                <BulletPoint />
-              </label>
-              {/* <ReactRTE /> */}
-              <Editor />
-              <ErrorMessage name="jobDesc" />
-            </div>
-          </div>
-          <div className="form">
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "2em",
-              }}
-            >
-              <h2>Tell us about your company</h2>
-              <span style={{ fontSize: ".875em" }}>
-                Required
-                <BulletPoint />
-              </span>
-            </div>
-            <div>
-              <label htmlFor="companyName" className={styles.label}>
-                Company Name
-                <BulletPoint />
-              </label>
-              <Field name="companyName" type="text" className={styles.input} />
-              <ErrorMessage name="companyName" />
-            </div>
-            <div>
-              <label htmlFor="companyStatement" className={styles.label}>
-                Company Statement
-              </label>
-              <Field
-                name="companyStatement"
-                type="text"
-                className={styles.input}
-              />
-              <ErrorMessage name="companyStatement" />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                flexWrap: "wrap",
-              }}
-            >
-              <div
-                style={{ flex: "1", marginRight: "1.5em", flexBasis: "300px" }}
-              >
-                <label htmlFor="companyWebsite" className={styles.label}>
-                  Company Website
-                  <BulletPoint />
-                </label>
-                <Field name="companyWebsite" className={styles.input} />
-              </div>
-              <div style={{ flex: "1", marginRight: "1.5em" }}>
-                <label htmlFor="companyEmail" className={styles.label}>
-                  Company Email
-                  <BulletPoint />
-                </label>
-                <Field name="companyEmail" className={styles.input} />
-              </div>
-            </div>
-            <div>
-              <label htmlFor="companyLogo" className={styles.label}>
-                Company Logo
-              </label>
-              <Field name="companyLogo" type="text" className={styles.input} />
-              <ErrorMessage name="companyLogo" />
-            </div>
-            <div className="last">
-              <label htmlFor="companyDesc" className={styles.label}>
-                Company Description
-                <BulletPoint />
-              </label>
-              <ReactRTE />
-              <ErrorMessage name="companyDesc" />
-            </div>
-          </div>
-          <div className="pricing">
-            <div>
-              <div className="pricing-title">
-                <h2>Help your ad stand out</h2>
-                <span
-                  style={{
-                    color: "var(--grey)",
-                    textTransform: "uppercase",
-                    fontSize: "small",
-                  }}
-                >
-                  Optional, but highly recommended
                 </span>
               </div>
-              <div className="cards" style={{ marginBottom: "4em" }}>
+              <div className={styles.inputDiv}>
+                <TextInput
+                  label="Job Title"
+                  name="jobTitle"
+                  type="text"
+                  required
+                />
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+                className={styles.inputDiv}
+              >
                 <div
-                  className={better ? "card selected" : "card"}
-                  onClick={() => selectBetter()}
+                  style={{ flex: 1, flexBasis: "300px", marginRight: "2em" }}
                 >
-                  <h3>Better</h3>
-                  <h4>$35</h4>
-                  <ul>
-                    <li>
-                      <CheckMark color="var(--orange)" /> Highlight your ad
-                    </li>
-                    <li>
-                      <CheckMark color="var(--orange)" /> 2x Social Media Posts
-                    </li>
-                    <li>
-                      <CheckMark color="var(--orange)" /> Share to Google Jobs
-                    </li>
-                    <li>
-                      <CheckMark color="var(--grey)" /> Company Logo
-                    </li>
-                    <li>
-                      <CheckMark color="var(--grey)" /> Featured for 14 days
-                    </li>
-                  </ul>
+                  <SelectInput label="Category" name="category" required>
+                    <option value="">Select a Category</option>
+                    <option value="Develop">Develop</option>
+                    <option value="Design">Design</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Support">Support</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Other">Other</option>
+                  </SelectInput>
                 </div>
                 <div
-                  className={best ? "card selected" : "card"}
-                  onClick={() => selectBest()}
+                  role="group"
+                  aria-labelledby="Job-Type"
+                  style={{ flexGrow: 1, flexShrink: 1 }}
                 >
-                  <h3>Best</h3>
-                  <h4>$65</h4>
-                  <ul>
-                    <li>
-                      <CheckMark color="var(--orange)" /> Highlight your ad
-                    </li>
-                    <li>
-                      <CheckMark color="var(--orange)" /> 2x Social Media Posts
-                    </li>
-                    <li>
-                      <CheckMark color="var(--orange)" /> Share to Google Jobs
-                    </li>
-                    <li>
-                      <CheckMark color="var(--orange)" /> Company Logo
-                    </li>
-                    <li>
-                      <CheckMark color="var(--orange)" /> Featured for 14 days
-                    </li>
-                  </ul>
+                  <div style={{ marginBottom: "2em" }}>
+                    <div className={styles.label}>
+                      Job Type
+                      <BulletPoint />
+                    </div>
+                    <label style={{ marginRight: "1em" }}>
+                      <Field
+                        type="radio"
+                        name="jobType"
+                        value="full-time"
+                        style={{ marginRight: ".5em" }}
+                      />
+                      Full-Time
+                    </label>
+                    <label>
+                      <Field
+                        type="radio"
+                        name="jobType"
+                        value="contract"
+                        style={{ marginRight: ".5em" }}
+                      />
+                      Contract
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+                className={styles.inputDiv}
+              >
+                <div
+                  style={{ flex: 1, flexBasis: "300px", marginRight: "2em" }}
+                >
+                  <TextInput
+                    label="Location"
+                    name="location"
+                    type="text"
+                    required
+                  />
+                </div>
+                <div
+                  role="group"
+                  aria-labelledby="Remote"
+                  style={{ flexGrow: 1, flexShrink: 1 }}
+                >
+                  <div style={{ marginBottom: "2em" }}>
+                    <div className={styles.label}>
+                      Remote Position
+                      <BulletPoint />
+                    </div>
+                    <label style={{ marginRight: "1em" }}>
+                      <Field
+                        type="radio"
+                        name="remote"
+                        value="true"
+                        style={{ marginRight: ".5em" }}
+                      />
+                      Yes
+                    </label>
+                    <label>
+                      <Field
+                        type="radio"
+                        name="remote"
+                        value="false"
+                        style={{ marginRight: ".5em" }}
+                      />
+                      No
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <TextInput
+                  label="How to Apply"
+                  name="howToApply"
+                  type="text"
+                  required
+                />
+              </div>
+              <div>
+                <TextInput
+                  label="Tags, comma separated"
+                  name="tags"
+                  type="text"
+                />
+              </div>
+              <div className="last">
+                <div style={{ marginBottom: ".25em" }}>
+                  <label htmlFor="jobDescription" className={styles.label}>
+                    Job Description
+                    <BulletPoint />
+                  </label>
+                </div>
+                <Field
+                  component={Editor}
+                  name="jobDescription"
+                  setConvertedContent={setConvertedContent}
+                  setFieldValue={setFieldValue}
+                  setTouched={setTouched}
+                  touched={touched}
+                />
+                <ErrorMessage
+                  name="jobDesc"
+                  style={{
+                    color: "var(--orange)",
+                    fontSize: ".875em",
+                    fontWeight: "700",
+                    marginBottom: ".5em",
+                    height: "1.25em",
+                    lineHeight: 1,
+                  }}
+                />
+              </div>
+            </div>
+            <div className="form">
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "2em",
+                }}
+              >
+                <h2>Tell us about your company</h2>
+                <span style={{ fontSize: ".875em" }}>
+                  Required
+                  <BulletPoint />
+                </span>
+              </div>
+              <div>
+                <TextInput
+                  label="Company Name"
+                  name="companyName"
+                  type="text"
+                  required
+                />
+              </div>
+              <div>
+                <TextInput
+                  label="Company Statement"
+                  name="companyStatement"
+                  type="text"
+                />
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+              >
+                <div
+                  style={{
+                    flex: "1",
+                    marginRight: "1.5em",
+                    flexBasis: "0",
+                  }}
+                >
+                  <TextInput
+                    label="Company Website"
+                    name="companyWebsite"
+                    type="text"
+                  />
+                </div>
+                <div style={{ flex: "1", marginRight: "1.5em" }}>
+                  <TextInput
+                    label="Company Email"
+                    name="companyEmail"
+                    type="text"
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <TextInput
+                  label="Company Logo"
+                  name="companyLogo"
+                  type="text"
+                />
+              </div>
+            </div>
+            <div style={{ marginBottom: '4em' }}>
+              <h4>Example Post</h4>
+              <ExamplePosting values={values} />
+            </div>
+            <div className="pricing">
+              <div>
+                <div className="pricing-title">
+                  <h2>Help your ad stand out</h2>
+                  <span
+                    style={{
+                      color: "var(--grey)",
+                      textTransform: "uppercase",
+                      fontSize: "small",
+                    }}
+                  >
+                    Optional, but highly recommended
+                  </span>
+                </div>
+                <div className="cards" style={{ marginBottom: "4em" }}>
+                  <div
+                    className={better ? "card selected" : "card"}
+                    onClick={() => selectBetter()}
+                  >
+                    <h3>Better</h3>
+                    <h4>$35</h4>
+                    <ul>
+                      <li>
+                        <CheckMark color="var(--orange)" /> Highlight your ad
+                      </li>
+                      <li>
+                        <CheckMark color="var(--orange)" /> 2x Social Media
+                        Posts
+                      </li>
+                      <li>
+                        <CheckMark color="var(--orange)" /> Share to Google Jobs
+                      </li>
+                      <li>
+                        <CheckMark color="var(--grey)" /> Company Logo
+                      </li>
+                      <li>
+                        <CheckMark color="var(--grey)" /> Featured for 14 days
+                      </li>
+                    </ul>
+                  </div>
+                  <div
+                    className={best ? "card selected" : "card"}
+                    onClick={() => selectBest()}
+                  >
+                    <h3>Best</h3>
+                    <h4>$65</h4>
+                    <ul>
+                      <li>
+                        <CheckMark color="var(--orange)" /> Highlight your ad
+                      </li>
+                      <li>
+                        <CheckMark color="var(--orange)" /> 2x Social Media
+                        Posts
+                      </li>
+                      <li>
+                        <CheckMark color="var(--orange)" /> Share to Google Jobs
+                      </li>
+                      <li>
+                        <CheckMark color="var(--orange)" /> Company Logo
+                      </li>
+                      <li>
+                        <CheckMark color="var(--orange)" /> Featured for 14 days
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="bottom-cards">
+                <div className="bottom-card">
+                  <span className="total">Total: ${total}</span>
+                </div>
+                <div className="cardContainer">
+                  <CardElement options={cardElementOptions} />
+                </div>
+                <div className="bottom-card">
+                  <button
+                    type="submit"
+                    className="button payButton"
+                    disabled={isProcessing}
+                  >
+                    {isProcessing ? "Processing..." : "Post your job"}
+                  </button>
                 </div>
               </div>
             </div>
-            <div className="bottom-cards">
-              <div className="bottom-card">
-                <span className="total">Total: ${total}</span>
-              </div>
-              <div className="cardContainer">
-                <CardElement options={cardElementOptions}/>
-              </div>
-              <div className="bottom-card">
-                <button type="submit" className="button payButton" disabled={isProcessing}>
-                  {isProcessing ? "Processing..." : "Post your job"}
-                </button>
-              </div>
-            </div>
-          </div>
-        </Form>
+            <FocusError />
+          </Form>
+        )}
       </Formik>
 
       <PrintObject content={payment} />

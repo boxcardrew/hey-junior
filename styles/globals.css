@@ -110,3 +110,18 @@ a {
 .description p:last-of-type {
   margin-bottom: 3.5em;
 }
+
+.last .rdw-editor-wrapper {
+  background: white;
+  border-radius: 8px;
+}
+
+.last .rdw-editor-toolbar {
+  border: none;
+  border-radius: 8px 8px 0 0;
+}
+
+.last .public-DraftEditor-content {
+  padding: .5em;
+  color:var(--black);
+}

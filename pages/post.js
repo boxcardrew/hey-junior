@@ -13,6 +13,7 @@ export default function Post() {
         <Nav />
         <div className="title">
           <h1>Junior Prices For Junior Jobs</h1>
+          <h2><span>Post a job for <del>$99</del></span><ins> Free</ins></h2>
         </div>
         <section>
           <PostLayout>
@@ -24,6 +25,22 @@ export default function Post() {
       <style jsx>{`
         section {
           width: 100%;
+        }
+        
+        ins {
+          position: absolute;
+          text-decoration: none;
+          font-family: "Lobster", cursive;
+          color: var(--orange);
+          margin-left: -20px;
+          margin-top: 20px;
+          transform: rotate(-10deg);
+          font-size: 1.25em;
+        }
+        del {
+          text-decoration: line-through;
+          text-decoration-color: var(--orange);
+          text-decoration-thickness: 4px;
         }
         .container {
           min-height: 100vh;

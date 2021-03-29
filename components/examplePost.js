@@ -19,13 +19,13 @@ export default function ExamplePosting({ values }) {
             <div className="logo">
               <div className="img-default"><img
                       src={`//logo.clearbit.com/${values.companyName.split(' ').join('')
-                      }.com?size=60`}
+                      }.com?size=50`}
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src =
                           "/favicon/favicon.png";
                       }}
-                      style={{ maxWidth: '60px' }}
+                      style={{ maxWidth: '50px' }}
                     /></div>
             </div>
             <div className="company">
@@ -54,9 +54,9 @@ export default function ExamplePosting({ values }) {
           </div>
           <div className="apply">
             
-              <a href='#' className={values.featured ? "button light" : "button"}>
+              <span href='#' className={values.featured ? "button light" : "button"}>
                 Apply Now
-              </a>
+              </span>
             
           </div>
         </div>
@@ -67,13 +67,13 @@ export default function ExamplePosting({ values }) {
           dangerouslySetInnerHTML={{ __html: values.jobDescription }}
         />
         <div className="contact">
-          <a className="button" href={values.applyURL}>Apply Now</a>
+          <span className="button" href={values.applyURL}>Apply Now</span>
           <div>
-            <span>email:</span> <a href="#">{values.companyEmail}</a>
+            <span>email:{values.companyEmail}</span>
           </div>
-          <Link href={"/jobs/" + values.id}>
+          <span>
             <a>View Job Posting</a>
-          </Link>
+          </span>
         </div>
       </div>
 
@@ -87,7 +87,7 @@ export default function ExamplePosting({ values }) {
         }
         details {
           background: var(--light-yellow);
-          margin-bottom: 1.5em;
+          margin-bottom: .25em;
           border-radius: 8px;
         }
         .details {
@@ -123,7 +123,6 @@ export default function ExamplePosting({ values }) {
           grid-template-columns: 5em 3fr 1fr 1fr 1fr;
         }
         .img-default {
-          background: var(--orange);
           border-radius: 50%;
           width: 50px;
           height: 50px;

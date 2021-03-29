@@ -17,13 +17,14 @@ export default function Posting({ post }) {
         <div className={post.featured ? "card featured" : "card"}>
           
             <div className="logo">
-              <div className="img-default"><img src={`//logo.clearbit.com/${post.companyWebsite}?size=50`} /></div>
+              <div className=""><img src={`//logo.clearbit.com/${post.companyWebsite}?size=50`} /></div>
             </div>
             <div className="company">
               <h4>{post.title}</h4>
               <div className="company-location">
                 <p>{post.company}</p>
-                <p>{post.location.location.city}</p>
+                
+                <p>{post?.location?.location?.city || post.location}</p>
               </div>
             </div>
 

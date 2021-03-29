@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import SelectSearch, { fuzzySearch } from "react-select-search";
 
 /**
@@ -203,15 +204,22 @@ const options = [
   },
 ];
 
-/* Simple example */
-export default function location({ location, setLocation }) {
+
+export default function location({ get, set, field }) {
+
+  const [text, setText] = useState('');
+
+  useEffect(() => {
+    set(field, text)
+  }, [text])
+
   return (
     <>
       <SelectSearch
       printOptions="on-focus"
-      onChange={setLocation}
+      onChange={field ? setText : set}
         options={options}
-        value={location}
+        autoComplete="off"
         name="language"
         placeholder="Enter a City"
         emptyMessage="More Cities Coming Soon"

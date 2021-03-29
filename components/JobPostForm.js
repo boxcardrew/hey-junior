@@ -17,9 +17,7 @@ import CityInput from "./typeahead";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import ExamplePosting from "./examplePost";
 
-const ReactRTE = dynamic(() => import("../components/Editor"), {
-  ssr: false,
-});
+const SelectSearchInput = dynamic(() => import('./LocationSearch'));
 
 const Editor = dynamic(
   () => {
@@ -463,9 +461,11 @@ export default function JobPostForm() {
                     <BulletPoint />
                   </label>
                   <Field
-                    component={CityInput}
-                    setFieldValue={setFieldValue}
-                    className="input form-input"
+                    component={SelectSearchInput}
+                    set={setFieldValue}
+                    field={"location"}
+                    
+                    // className="input form-input"
                   />
                 </div>
                 <div

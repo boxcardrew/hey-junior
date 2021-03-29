@@ -176,7 +176,6 @@ a {
  .select-search {
   width: 100%;
   position: relative;
-  font-family: 'Nunito Sans', sans-serif;
   box-sizing: border-box;
 }
 
@@ -220,7 +219,7 @@ a {
   justify-content: flex-start;
   line-height: 1.5;
   padding-bottom: calc(0.5em - 1px);
-  padding-left: calc(0.75em - 1px);
+  padding-left: calc(2.75em - 1px);
   padding-right: calc(0.75em - 1px);
   padding-top: calc(0.5em - 1px);
   position: relative;
@@ -229,6 +228,9 @@ a {
   color: var(--black);
   border-radius: 8px;
   width: 100%;
+  background-image: url("/icons/place.svg");
+  background-repeat: no-repeat;
+  background-position: 8px center;
 }
 
 .select-search__input::-webkit-search-decoration,

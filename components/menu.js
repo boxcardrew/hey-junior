@@ -26,7 +26,8 @@ export default function Menu() {
     >
       <ul>
         {cat.map((item) => (
-          <Link href={item.href} key={item.item}>
+          <li key={item.item}>
+          <Link href={item.href}>
             <a>
               <div className="menu-item">
                 <Image
@@ -39,18 +40,19 @@ export default function Menu() {
               </div>
             </a>
           </Link>
+          </li>
         ))}
       </ul>
       <style jsx>{`
         div {
           width: 100%;
-          margin-bottom: 2em;
         }
         ul {
           display: flex;
           justify-content: space-between;
           overflow-x: auto;
           width: 800px;
+          margin-bottom: 4em;
         }
         @media only screen and (max-width: 767px) {
           ul {
@@ -63,7 +65,7 @@ export default function Menu() {
           font-weight: 700;
         }
         .menu-item svg {
-          fill: var(--text);
+          fill: currentColor;
         }
         a:hover,
         a:focus {
@@ -71,7 +73,7 @@ export default function Menu() {
         }
         a:focus {
           outline: var(--orange) auto 1px;
-          outline-offset: 1px;
+          outline-offset: -2px;
         }
       `}</style>
     </div>

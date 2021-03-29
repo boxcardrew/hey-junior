@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { fetchPostJSON } from "../utils/api-helpers";
 import { EditorState } from "draft-js";
 import { convertToHTML } from "draft-convert";
-
+import CityInput from "./typeahead";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import ExamplePosting from "./examplePost";
 
@@ -29,6 +29,7 @@ const Editor = dynamic(
 );
 
 const BASIC = "price_1IM4zADN3w6TabsRUEtBLB9g";
+const FREE = "price_1IY33vDN3w6TabsRQjvepNpZ";
 const STANDARD = "price_1IM523DN3w6TabsRAr5UUGnR";
 const PREMIUM = "price_1IM52PDN3w6TabsR1tvlKCVK";
 
@@ -94,7 +95,8 @@ export default function JobPostForm() {
   const [upgades, setUpgrades] = useState();
   const [isProcessing, setIsProcessing] = useState(false);
   const [payment, setPayment] = useState({ status: "Initial" });
-  const [priceId, setPriceId] = useState(BASIC);
+  const [priceId, setPriceId] = useState(FREE);
+  const [postType, setPostType] = useState('basic')
 
   // const [editorState, setEditorState] = useState(
   //   () => EditorState.createEmpty(),
@@ -122,82 +124,116 @@ export default function JobPostForm() {
     if (better) {
       setBetter(false);
       setBest(false);
+      setPostType('basic');
     }
     if (!better) {
       setBest(false);
       setBetter(true);
       setUpgrades(22435);
+      setPostType('better');
     }
   };
   const selectBest = () => {
     if (best) {
       setBetter(false);
       setBest(false);
+      setPostType('basic');
     }
     if (!best) {
       setBest(true);
       setBetter(false);
       setUpgrades(22436);
+      setPostType('best');
     }
   };
 
   const handleSubmit = async (values) => {
     //Check if form is valid
     setIsProcessing(true);
-
-    //Create PaymentIntent with amount from items
-    const response = await fetchPostJSON("/api/payment_intents", {
-      priceId: priceId,
-      email: values.companyEmail,
-      metadata: {
-        email: values.companyEmail,
-        jobTitle: values.jobTitle,
-        company: values.company,
-      },
-    });
-    setPayment(response);
-
-    if (response.statusCode === 500) {
-      setPayment({ status: "error" });
-      //Set Error Message
-      return;
-    }
-
-    //Get a ref to the CardElement
-    const cardElement = elements.getElement(CardElement);
-
-    //Use CardElement to process payment
-    const { error, paymentIntent } = await stripe.confirmCardPayment(
-      response.client_secret,
-      {
-        payment_method: {
-          card: cardElement,
-        },
+    if (total === 0) {
+      try {
+        const body = {
+          values,
+          postType
+        };
+        await fetch("/api/post", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+      } catch (error) {
+        console.log(error);
       }
-    );
-
-    if (error) {
-      setPayment({ status: "error" });
-      //Set error message
-    } else if (paymentIntent) {
-      setPayment(paymentIntent);
       setIsProcessing(false);
       alert(JSON.stringify(values, null, 2));
-      // Send to success page
+    } else {
+      //Create PaymentIntent with amount from items
+      const response = await fetchPostJSON("/api/payment_intents", {
+        priceId: priceId,
+        email: values.companyEmail,
+        metadata: {
+          email: values.companyEmail,
+          jobTitle: values.jobTitle,
+          company: values.company,
+        },
+      });
+      setPayment(response);
+
+      if (response.statusCode === 500) {
+        setPayment({ status: "error" });
+        //Set Error Message
+        return;
+      }
+
+      //Get a ref to the CardElement
+      const cardElement = elements.getElement(CardElement);
+
+      //Use CardElement to process payment
+      const { error, paymentIntent } = await stripe.confirmCardPayment(
+        response.client_secret,
+        {
+          payment_method: {
+            card: cardElement,
+          },
+        }
+      );
+
+      if (error) {
+        setPayment({ status: "error" });
+        //Set error message
+      } else if (paymentIntent) {
+        setPayment(paymentIntent);
+        try {
+          const body = {
+            values,
+            postType
+          };
+          await fetch("/api/post", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        setIsProcessing(false);
+        alert(JSON.stringify(values, null, 2));
+        // Send to success page
+      }
     }
   };
 
   useEffect(() => {
     if (!better && !best) {
-      setTotal(99);
-      setPriceId(BASIC);
+      setTotal(0);
+      setPriceId(FREE);
     }
     if (better) {
-      setTotal(134);
+      setTotal(35);
       setPriceId(STANDARD);
     }
     if (best) {
-      setTotal(164);
+      setTotal(65);
       setPriceId(PREMIUM);
     }
   }, [better, best]);
@@ -293,7 +329,7 @@ export default function JobPostForm() {
           jobDescription: "",
           jobType: "",
           howToApply: "http://",
-          remotePosition: "",
+          remote: "",
           companyName: "",
           companyStatement: "",
           companyWebsite: "http://",
@@ -422,11 +458,14 @@ export default function JobPostForm() {
                 <div
                   style={{ flex: 1, flexBasis: "300px", marginRight: "2em" }}
                 >
-                  <TextInput
-                    label="Location"
-                    name="location"
-                    type="text"
-                    required
+                  <label htmlFor="location" className={styles.label}>
+                    Location
+                    <BulletPoint />
+                  </label>
+                  <Field
+                    component={CityInput}
+                    setFieldValue={setFieldValue}
+                    className="input form-input"
                   />
                 </div>
                 <div
@@ -540,20 +579,14 @@ export default function JobPostForm() {
                   flexWrap: "wrap",
                 }}
               >
-                <div
-                  style={{
-                    flex: "1",
-                    marginRight: "1.5em",
-                    flexBasis: "0",
-                  }}
-                >
+                <div className={styles.halfInput}>
                   <TextInput
                     label="Company Website"
                     name="companyWebsite"
                     type="text"
                   />
                 </div>
-                <div style={{ flex: "1", marginRight: "1.5em" }}>
+                <div className={styles.halfInput}>
                   <TextInput
                     label="Company Email"
                     name="companyEmail"
@@ -566,13 +599,16 @@ export default function JobPostForm() {
                 <TextInput
                   label="Company Logo"
                   name="companyLogo"
-                  type="text"
+                  type="file"
                 />
               </div>
             </div>
-            <div style={{ marginBottom: '4em' }}>
+            <div style={{ marginBottom: "4em" }}>
               <h4>Example Post</h4>
               <ExamplePosting values={values} />
+              <div style={{ textAlign: "center" }}>
+                <a href="https://clearbit.com">Logos provided by Clearbit</a>
+              </div>
             </div>
             <div className="pricing">
               <div>
@@ -645,9 +681,11 @@ export default function JobPostForm() {
                 <div className="bottom-card">
                   <span className="total">Total: ${total}</span>
                 </div>
-                <div className="cardContainer">
-                  <CardElement options={cardElementOptions} />
-                </div>
+                {total ? (
+                  <div className="cardContainer">
+                    <CardElement options={cardElementOptions} />
+                  </div>
+                ) : null}
                 <div className="bottom-card">
                   <button
                     type="submit"

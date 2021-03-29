@@ -53,3 +53,17 @@
 .inputDiv {
   margin-bottom: 1em;
 }
+
+.halfInput {
+  flex: 1 1 0;
+  flex-basis: calc(375px - 24px);
+}
+.halfInput:first-of-type {
+  margin-right: 1.5em;
+}
+
+@media (max-width: 700px) {
+  .halfInput:first-of-type {
+    margin-right: 0;
+  }
+}

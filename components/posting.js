@@ -188,7 +188,7 @@ export default function Posting({ post }) {
             grid-row: 1/3;
           }
           .card {
-            grid-template-columns: 1fr 3fr 1fr 1fr 1fr;
+            grid-template-columns: 1fr 3fr 1fr;
           }
         }
         @media only screen and (max-width: 601px) {
@@ -196,6 +196,7 @@ export default function Posting({ post }) {
             display: grid;
             padding: 0.5em;
             grid-gap: 0 0.5em;
+            grid-template-columns: 1fr 4fr 1fr;
           }
 
           .logo {
@@ -203,12 +204,18 @@ export default function Posting({ post }) {
           }
           .company {
             margin-left: 0px;
+            grid-column: 2/4;
           }
           .company-location {
             display: flex;
           }
           .company-location p:first-of-type {
             margin-right: 0.5em;
+          }
+          .company-location p:last-of-type {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
           }
           .tags {
            grid-column: 2/3;

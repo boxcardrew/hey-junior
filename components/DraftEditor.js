@@ -34,10 +34,10 @@ export default function DraftEditor({ touched, setFieldValue, setTouched }) {
     editorState={editorState}
     onEditorStateChange={handleEditorChange}
       toolbar={{
-        options: ['inline', 'blockType', 'fontSize', 'list',  'emoji', 'image', 'embedded', 'link'],
+        options: ['inline', 'blockType', 'fontSize', 'list', 'image', 'embedded', 'link'],
         inline: { 
           inDropdown: false,
-          options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace']
+          options: ['bold', 'italic', 'underline', 'monospace']
         },
         list: { 
           inDropdown: false,

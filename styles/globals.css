@@ -139,7 +139,9 @@ a {
   position: relative;
 }
 .input:focus, .select:focus, .textarea:focus, .input:hover, .select:hover {
+  
   border: 2px solid var(--orange);
+  border-radius: 8px;
   outline: none;
 }
 

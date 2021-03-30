@@ -11,13 +11,60 @@ import styles from "../styles/JobPostForm.module.css";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { fetchPostJSON } from "../utils/api-helpers";
-import { EditorState } from "draft-js";
-import { convertToHTML } from "draft-convert";
-import CityInput from "./typeahead";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import ExamplePosting from "./examplePost";
 
-const SelectSearchInput = dynamic(() => import('./LocationSearch'));
+const citiesList = [
+  "Los Angeles-Long Beach-Anaheim, CA",
+  "Chicago-Naperville-Elgin, IL-IN-WI",
+  "New York-Newark-Jersey City, NY-NJ-PA",
+  "Dallas-Fort Worth-Arlington, TX",
+  "Houston-The Woodlands-Sugar Land, TX",
+  "Washington-Arlington-Alexandria, DC-VA-MD-WV",
+  "Miami-Fort Lauderdale-Pompano Beach, FL",
+  "Philadelphia-Camden-Wilmington, PA-NJ-DE-MD",
+  "Atlanta-Sandy Springs-Alpharetta, GA",
+  "Phoenix-Mesa-Chandler, AZ",
+  "Boston-Cambridge-Newton, MA-NH",
+  "San Francisco-Oakland-Berkeley, CA",
+  "Riverside-San Bernardino-Ontario, CA",
+  "Detroit-Warren-Dearborn, MI",
+  "Seattle-Tacoma-Bellevue, WA",
+  "Minneapolis-St. Paul-Bloomington, MN-WI",
+  "San Diego-Chula Vista-Carlsbad, CA",
+  "Tampa-St. Petersburg-Clearwater, FL",
+  "Denver-Aurora-Lakewood, CO",
+  "St. Louis, MO-IL",
+  "Baltimore-Columbia-Towson, MD",
+  "Charlotte-Concord-Gastonia, NC-SC",
+  "Orlando-Kissimmee-Sanford, FL",
+  "San Antonio-New Braunfels, TX",
+  "Portland-Vancouver-Hillsboro, OR-WA",
+  "Sacramento-Roseville-Folsom, CA",
+  "Pittsburgh, PA",
+  "Las Vegas-Henderson-Paradise, NV",
+  "Austin-Round Rock-Georgetown, TX",
+  "Cincinnati, OH-KY-IN",
+  "Kansas City, MO-KS",
+  "Columbus, OH",
+  "Indianapolis-Carmel-Anderson, IN",
+  "Cleveland-Elyria, OH",
+  "San Jose-Sunnyvale-Santa Clara, CA",
+  "Nashville-Davidson--Murfreesboro--Franklin, TN",
+  "Virginia Beach-Norfolk-Newport News, VA-NC",
+  "Providence-Warwick, RI-MA",
+  "Milwaukee-Waukesha, WI",
+  "Jacksonville, FL",
+  "Oklahoma City, OK",
+  "Raleigh-Cary, NC",
+  "Memphis, TN-MS-AR",
+  "Richmond, VA",
+  "New Orleans-Metairie, LA",
+  "Louisville/Jefferson County, KY-IN",
+  "Salt Lake City, UT",
+  "Hartford-East Hartford-Middletown, CT",
+  "Buffalo-Cheektowaga, NY",
+];
 
 const Editor = dynamic(
   () => {
@@ -94,7 +141,7 @@ export default function JobPostForm() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [payment, setPayment] = useState({ status: "Initial" });
   const [priceId, setPriceId] = useState(FREE);
-  const [postType, setPostType] = useState('basic')
+  const [postType, setPostType] = useState("basic");
 
   // const [editorState, setEditorState] = useState(
   //   () => EditorState.createEmpty(),
@@ -122,26 +169,26 @@ export default function JobPostForm() {
     if (better) {
       setBetter(false);
       setBest(false);
-      setPostType('basic');
+      setPostType("basic");
     }
     if (!better) {
       setBest(false);
       setBetter(true);
       setUpgrades(22435);
-      setPostType('better');
+      setPostType("better");
     }
   };
   const selectBest = () => {
     if (best) {
       setBetter(false);
       setBest(false);
-      setPostType('basic');
+      setPostType("basic");
     }
     if (!best) {
       setBest(true);
       setBetter(false);
       setUpgrades(22436);
-      setPostType('best');
+      setPostType("best");
     }
   };
 
@@ -152,7 +199,7 @@ export default function JobPostForm() {
       try {
         const body = {
           values,
-          postType
+          postType,
         };
         await fetch("/api/post", {
           method: "POST",
@@ -204,7 +251,7 @@ export default function JobPostForm() {
         try {
           const body = {
             values,
-            postType
+            postType,
           };
           await fetch("/api/post", {
             method: "POST",
@@ -456,17 +503,28 @@ export default function JobPostForm() {
                 <div
                   style={{ flex: 1, flexBasis: "300px", marginRight: "2em" }}
                 >
-                  <label htmlFor="location" className={styles.label}>
-                    Location
-                    <BulletPoint />
-                  </label>
-                  <Field
-                    component={SelectSearchInput}
-                    set={setFieldValue}
-                    field={"location"}
-                    
-                    // className="input form-input"
-                  />
+                  {values.remote === "true" ? (
+                    <TextInput
+                      label="Location"
+                      name="location"
+                      required
+                      placeholder="Enter a Location"
+                    />
+                  ) : (
+                    <SelectInput label="Location" name="location" required>
+                      <option selected value="" disabled>
+                        Select a Location
+                      </option>
+                      {citiesList.map((city) => (
+                        <option value={city} className="location_option">
+                          {city}
+                        </option>
+                      ))}
+                      <option value="" disabled>
+                        More Cities Coming Soon
+                      </option>
+                    </SelectInput>
+                  )}
                 </div>
                 <div
                   role="group"

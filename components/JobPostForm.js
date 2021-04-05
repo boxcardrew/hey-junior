@@ -762,7 +762,6 @@ export default function JobPostForm() {
         )}
       </Formik>
 
-      <PrintObject content={payment} />
       <style jsx>{`
       .form, .pricing {
           background: var(--light-yellow);

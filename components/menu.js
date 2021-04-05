@@ -16,7 +16,6 @@ export default function Menu() {
   return (
     <div
       style={{
-        width: "100vw",
         maxWidth: '850px',
         overflowX: "auto",
         padding: "0 1em",
@@ -55,9 +54,10 @@ export default function Menu() {
           margin-bottom: 4em;
         }
         @media only screen and (max-width: 767px) {
-          ul {
-            padding-left: 1em;
+          li:last-of-type {
+            margin-right: 1em;
           }
+          
         }
         .menu-item {
           display: flex;

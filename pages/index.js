@@ -9,6 +9,8 @@ import Posting from "../components/posting";
 import Title from "../components/title";
 
 import prisma from '../lib/prisma'
+import Footer from "../components/footer";
+import Layout from "../components/layout";
 
 
 
@@ -27,7 +29,9 @@ export async function getStaticProps() {
 const Home = ( {jobs} ) => {
   
   return (
-    <div className={styles.container}>
+    <div>
+      <Layout>
+
       <Head>
         <title>HeyJunior - Jobs to start your new career</title>
         
@@ -52,7 +56,6 @@ const Home = ( {jobs} ) => {
       </Head>
 
       <main className={styles.main}>
-        <Nav />
         <section className={styles.hero}>
           <h1 className={styles.title}>The #1 job board for junior</h1>
           <Title />
@@ -109,11 +112,7 @@ const Home = ( {jobs} ) => {
           </div>
         </div>
       </main>
-
-      <footer className={styles.footer}>
-        <span>Hey junior</span>
-        <span>©2021</span>
-      </footer>
+      </Layout>
     </div>
   );
 }

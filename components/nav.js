@@ -11,6 +11,7 @@ export default function Nav() {
       <style jsx>{`
         nav {
           width: 100%;
+          margin-bottom: 2em;
         }
         ul {
           list-style: none;

@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { fetchPostJSON } from "../utils/api-helpers";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import ExamplePosting from "./examplePost";
+import { useRouter } from "next/router"
 
 const citiesList = [
   "Los Angeles-Long Beach-Anaheim, CA",
@@ -134,6 +135,7 @@ const PrintObject = ({ content }) => {
 };
 
 export default function JobPostForm() {
+  const router = useRouter();
   const [better, setBetter] = useState(true);
   const [best, setBest] = useState(false);
   const [total, setTotal] = useState(225);
@@ -210,7 +212,7 @@ export default function JobPostForm() {
         console.log(error);
       }
       setIsProcessing(false);
-      alert(JSON.stringify(values, null, 2));
+      router.push('/sucess')
     } else {
       //Create PaymentIntent with amount from items
       const response = await fetchPostJSON("/api/payment_intents", {
@@ -262,8 +264,8 @@ export default function JobPostForm() {
           console.log(error);
         }
         setIsProcessing(false);
-        alert(JSON.stringify(values, null, 2));
         // Send to success page
+        router.push('/sucess')
       }
     }
   };

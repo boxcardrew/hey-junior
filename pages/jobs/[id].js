@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Nav from "../../components/nav";
 import getDate from "../../utils/getDate";
+import Footer from "../../components/footer";
 
 // import Posting from "../../components/posting";
 
@@ -29,13 +30,14 @@ export default function Post(props) {
       shareData: {
         title: "Job from HeyJunior",
         text: "Check out this job posting from HeyJunior",
-        url: "window.location",
+        url: window.location,
       },
     },
     { name: "Share to Linked In", src: "/icons/cib_linkedin.svg", url: "/" },
     { name: "Share to Twitter", src: "/icons/cib_twitter.svg", url: "/" },
   ];
   return (
+    <>
     <div className="container">
       <Head>
         <title>
@@ -48,8 +50,8 @@ export default function Post(props) {
           <Link href="/">
             <a>Back to Job Postings</a>
           </Link>
-          <Link href={category}>
-            <a>See More {category} Jobs</a>
+          <Link href={"/" + props.category}>
+            <a>See More {props.category} Jobs</a>
           </Link>
         </div>
         <section className="section">
@@ -143,6 +145,7 @@ export default function Post(props) {
           <Posting /> */}
         </div>
       </div>
+        
       <style jsx>{`
         .img-default {
           background: var(--orange);
@@ -158,7 +161,7 @@ export default function Post(props) {
         }
         .container {
           min-height: 100vh;
-          padding: 0 0.5rem;
+          padding: 0;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -310,6 +313,8 @@ export default function Post(props) {
           }
         }
       `}</style>
+    <Footer />
     </div>
+    </>
   );
 }

@@ -28,7 +28,7 @@ export default function Sucess() {
                 </p>
                 <p>
                   If you need help or support, please reach out to:<br></br>
-                  <a href="mailto:support@heyjunior.io">support@heyjunior.io</a>
+                  <a href="mailto:support@heyjunior.co">support@heyjunior.co</a>
                 </p>
               </div>
             </div>

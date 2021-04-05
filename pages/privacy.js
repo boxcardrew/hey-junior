@@ -1,6 +1,6 @@
-import Footer from "../components/footer"
+
 import Layout from "../components/layout"
-import Nav from "../components/nav"
+
 
 export default function Privacy() {
   return (
@@ -216,6 +216,13 @@ export default function Privacy() {
       <style jsx>{`
         section > * {
           margin-bottom: 1em;
+        }
+        section {
+          background: var(--light-yellow);
+          border-radius: 8px;
+          padding: 2em 2em;
+          width: 100%;
+          margin-bottom: 2em;
         }
         `}</style>
       </Layout>

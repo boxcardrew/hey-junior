@@ -114,7 +114,7 @@ export default function Post(props) {
                 <h4>Help us maintain the quality of our job postings.</h4>
                 <div>
                   <p>Is this job a junior position?</p>
-                  <a href="/" className="button">
+                  <a href={`mailto:contact@heyjunior.co?subject=${props.company} - ${props.title} Flag`} className="button">
                     Let Us Know
                   </a>
                 </div>
@@ -138,7 +138,7 @@ export default function Post(props) {
         <div className="similar">
           <div className="page-nav">
             <h4>Related Jobs</h4>
-            <span>See More {category} Jobs</span>
+            <span>See More {props.category} Jobs</span>
           </div>
           {/* <Posting />
           <Posting />

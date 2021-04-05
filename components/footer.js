@@ -35,6 +35,11 @@ const categories = [
   { name: "Other", url: "/other" },
 ];
 
+const legals = [
+  {name: "Privacy", url: "/privacy"},
+  {name: "Terms", url: "/terms"}
+]
+
 export default function Footer() {
   return (
     <footer>
@@ -51,7 +56,7 @@ export default function Footer() {
           <h6>Job Categories</h6>
           <ul>
             {categories.map(({ name, url }) => (
-              <li>
+              <li key={name}>
                 <Link href={url}>
                   <a>{`Junior ${name} Jobs`}</a>
                 </Link>
@@ -66,7 +71,7 @@ export default function Footer() {
               <a href="mailto:contact@heyjunior.co">contact@heyjunior.co</a>
             </li>
             {socialLinks.map(({ name, url, icon }) => (
-              <li>
+              <li key={name}>
                 <a href={url}>
                   <Image src={icon} alt={name} width={25} height={25} />
                 </a>
@@ -74,6 +79,14 @@ export default function Footer() {
             ))}
           </ul>
         </div>
+      </section>
+      <section className="legals">
+        <ul>
+          <li>Copyright © {new Date().getFullYear()}</li> 
+          {legals.map(({ name, url }) => (
+            <><span>•</span><li key={name}><Link href={url}><a>{name}</a></Link></li></> 
+          ))}
+        </ul>
       </section>
       <style jsx>{`
         footer {
@@ -99,7 +112,7 @@ export default function Footer() {
         }
         div {
           font-size: .875em;
-          margin-bottom: 4em;
+          margin-bottom: 2em;
         }
         p{
           line-height: 1.5;
@@ -125,6 +138,13 @@ export default function Footer() {
         .social li {
           display: inline-block;
           margin-right: 1.5em;
+        }
+        .legals {
+          text-align: center;
+        }
+        .legals li, .legals span {
+          display: inline-block;
+          margin-right: 1em;
         }
 
       `}</style>

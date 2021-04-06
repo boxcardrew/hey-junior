@@ -30,7 +30,7 @@ export default function Post(props) {
       shareData: {
         title: "Job from HeyJunior",
         text: "Check out this job posting from HeyJunior",
-        url: window.location,
+        url: "https://heyjunior.co/jobs/" + props.id,
       },
     },
     { name: "Share to Linked In", src: "/icons/cib_linkedin.svg", url: "/" },
@@ -62,12 +62,12 @@ export default function Post(props) {
               <div className="location">
                   <Image
                     src="/icons/place.svg"
-                    alt={props.location.location.city}
+                    alt={props.location}
                     width={24}
                     height={24}
                   />
                 <span>
-                  {props.location.location.city}
+                  {props.location}
                 </span>
               </div>
               <div className="tags">

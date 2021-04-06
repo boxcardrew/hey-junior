@@ -56,9 +56,7 @@ export default function Posting({ post }) {
         />
         <div className="contact">
           <a className="button" href={post.applyURL}>Apply Now</a>
-          <div>
-            <span>email:</span> <a href={`mailto:${post.companyEmail}?subject=Job Posting on HeyJunior`}>{post.companyEmail}</a>
-          </div>
+          
           <Link href={"/jobs/" + post.id}>
             <a>View Job Posting</a>
           </Link>

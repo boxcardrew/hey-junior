@@ -22,7 +22,9 @@ export async function getStaticProps() {
     ]
   })
   return {
-    props : { jobs }
+    props : { jobs },
+  
+    revalidate: 10, 
   }
 }
 

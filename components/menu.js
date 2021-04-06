@@ -3,14 +3,14 @@ import Image from "next/image";
 
 export default function Menu() {
   const cat = [
-    { item: "Remote", src: "remote.svg", href: "/remote" },
-    { item: "Design", src: "design.svg", href: "/design" },
-    { item: "Develop", src: "develop.svg", href: "/develop" },
-    { item: "Support", src: "support.svg", href: "/support" },
-    { item: "Sales", src: "sales.svg", href: "/sales" },
-    { item: "Marketing", src: "marketing.svg", href: "/marketing" },
-    { item: "Finance", src: "finance.svg", href: "/finance" },
-    { item: "Other", src: "other.svg", href: "/other" },
+    { item: "Remote", src: "remote.svg", href: "/jobs/browse/remote" },
+    { item: "Design", src: "design.svg", href: "/jobs/browse/design" },
+    { item: "Develop", src: "develop.svg", href: "/jobs/browse/develop" },
+    { item: "Support", src: "support.svg", href: "/jobs/browse/support" },
+    { item: "Sales", src: "sales.svg", href: "/jobs/browse/sales" },
+    { item: "Marketing", src: "marketing.svg", href: "/jobs/browse/marketing" },
+    { item: "Finance", src: "finance.svg", href: "/jobs/browse/finance" },
+    { item: "Other", src: "other.svg", href: "/jobs/browse/other" },
   ];
 
   return (

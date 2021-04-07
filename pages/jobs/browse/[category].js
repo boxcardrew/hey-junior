@@ -13,7 +13,7 @@ import Layout from "../../../components/layout";
 
 
 export async function getServerSideProps({ params }) {
-  console.log(params)
+  
   const jobs = await prisma.jobPosting.findMany({
     where: {
       category: {
@@ -28,18 +28,18 @@ export async function getServerSideProps({ params }) {
     ]
   })
   return {
-    props : { jobs },
+    props : { jobs, params }
   }
 }
 
-const Home = ( {jobs} ) => {
-  console.log(jobs)
+const Home = ( {jobs, params} ) => {
+  
   return (
     <div>
       <Layout>
 
       <Head>
-        <title>HeyJunior - Jobs to start your new career</title>
+        <title>Junior {params.category} Jobs</title>
         
         <link
           rel="apple-touch-icon"
@@ -79,8 +79,8 @@ const Home = ( {jobs} ) => {
           <h2>Trusted by companies</h2>
         </div> */}
         <div style={{ width: "100%" }}>
-          <h3 style={{ fontSize: "1.5rem", marginBottom: "1em" }}>
-            New Job Posts
+          <h3 style={{ fontSize: "1.5rem", marginBottom: "1em", textTransform: "capitalize" }}>
+            {params.category} Jobs
           </h3>
           <div>
             <ul>

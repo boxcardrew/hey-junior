@@ -5,7 +5,7 @@ export default function Menu() {
   const cat = [
     { item: "Remote", src: "remote.svg", href: "/jobs/browse/remote" },
     { item: "Design", src: "design.svg", href: "/jobs/browse/design" },
-    { item: "Develop", src: "develop.svg", href: "/jobs/browse/develop" },
+    { item: "Developer", src: "develop.svg", href: "/jobs/browse/developer" },
     { item: "Support", src: "support.svg", href: "/jobs/browse/support" },
     { item: "Sales", src: "sales.svg", href: "/jobs/browse/sales" },
     { item: "Marketing", src: "marketing.svg", href: "/jobs/browse/marketing" },

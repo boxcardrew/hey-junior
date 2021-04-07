@@ -4,12 +4,12 @@ import Image from "next/image";
 const socialLinks = [
   {
     name: "linkedin",
-    url: "https://linkedin.com/heyjuniorjobs",
+    url: "https://linkedin.com/company/heyjunior",
     icon: "/icons/social/linkedin.svg",
   },
   {
     name: "twitter",
-    url: "https://twitter.com/heyjunior",
+    url: "https://twitter.com/heyjuniorjobs",
     icon: "/icons/social/twitter.svg",
   },
   {
@@ -25,14 +25,14 @@ const socialLinks = [
 ];
 
 const categories = [
-  { name: "Remote", url: "/remote" },
-  { name: "Developer", url: "/develop" },
-  { name: "Design", url: "/design" },
-  { name: "Support", url: "/support" },
-  { name: "Sales", url: "/sales" },
-  { name: "Marketing", url: "/marketing" },
-  { name: "Finance", url: "/finance" },
-  { name: "Other", url: "/other" },
+  { name: "Remote", url: "/jobs/browse/remote" },
+  { name: "Developer", url: "/jobs/browse/developer" },
+  { name: "Design", url: "/jobs/browse/design" },
+  { name: "Support", url: "/jobs/browse/support" },
+  { name: "Sales", url: "/jobs/browse/sales" },
+  { name: "Marketing", url: "/jobs/browse/marketing" },
+  { name: "Finance", url: "/jobs/browse/finance" },
+  { name: "Other", url: "/jobs/browse/other" },
 ];
 
 const legals = [
@@ -48,7 +48,7 @@ export default function Footer() {
           <h6>Hey Junior</h6>
           <p>
             The future of work must be inclusive. We believe that when people
-            feel respected and included they willl be more creative, innovative
+            feel respected and included they will be more creative, innovative
             and successful.
           </p>
         </div>
@@ -72,7 +72,7 @@ export default function Footer() {
             </li>
             {socialLinks.map(({ name, url, icon }) => (
               <li key={name}>
-                <a href={url}>
+                <a href={url} target="_blank">
                   <Image src={icon} alt={name} width={25} height={25} />
                 </a>
               </li>

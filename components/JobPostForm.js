@@ -454,7 +454,7 @@ export default function JobPostForm() {
                 >
                   <SelectInput label="Category" name="category" required>
                     <option value="">Select a Category</option>
-                    <option value="Develop">Develop</option>
+                    <option value="Developer">Developer</option>
                     <option value="Design">Design</option>
                     <option value="Marketing">Marketing</option>
                     <option value="Sales">Sales</option>

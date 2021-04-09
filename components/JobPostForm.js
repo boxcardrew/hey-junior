@@ -211,7 +211,13 @@ export default function JobPostForm() {
       } catch (error) {
         console.log(error);
       }
+      fetch('api/send_email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ values })
+      });
       setIsProcessing(false);
+
       router.push('/sucess')
     } else {
       //Create PaymentIntent with amount from items
@@ -399,7 +405,7 @@ export default function JobPostForm() {
           category: Yup.string()
             .oneOf(
               [
-                "Develop",
+                "Developer",
                 "Design",
                 "Marketing",
                 "Sales",

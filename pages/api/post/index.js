@@ -8,7 +8,6 @@ export default async function handle(req, res) {
   const {
     values, postType
   } = req.body;
-  console.log(req.body)
   const today = Date.now()
   const currentDate = new Date(today);
   const validDate = currentDate.setDate(currentDate.getDate() + 30);

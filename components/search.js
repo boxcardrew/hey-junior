@@ -1,10 +1,12 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function Search() {
   const [location, setLocation] = useState("");
   const [search, setSearch] = useState("");
 
-  
+  const router = useRouter();
+
   const citiesList = [
     "Remote Only",
     "Los Angeles-Long Beach-Anaheim, CA",
@@ -56,22 +58,47 @@ export default function Search() {
     "Salt Lake City, UT",
     "Hartford-East Hartford-Middletown, CT",
     "Buffalo-Cheektowaga, NY",
-  ]
+  ];
+
+  const submitSearch = (e) => {
+    e.preventDefault()
+    router.push(`/jobs/browse/search?query=${search}`)
+  }
 
   return (
     <section>
-      <div>
-        <input name="search" className="input search" placeholder="UX Designer" onChange={(e) => setSearch(e.target.value)}></input>
-      </div>
-      <div>
-        <select name="location" className="input location" placeholder="Phoenix, AZ" onChange={(e) => setLocation(e.target.value)}>
-          <option selected value="" disabled>Select a Location</option>
-          {citiesList.map(city => <option value={city} className="location_option" >{city}</option>)}
-          <option value="" disabled>More Cities Coming Soon</option>
-        </select>
-      </div>
+      <form onSubmit={submitSearch}>
+        <div>
+          <input
+            name="search"
+            className="input search"
+            placeholder="UX Designer"
+            onChange={(e) => setSearch(e.target.value)}
+          ></input>
+        </div>
+        <div>
+          <select
+            name="location"
+            className="input location"
+            placeholder="Phoenix, AZ"
+            onChange={(e) => setLocation(e.target.value)}
+          >
+            <option selected value="" disabled>
+              Select a Location
+            </option>
+            {citiesList.map((city) => (
+              <option value={city} className="location_option">
+                {city}
+              </option>
+            ))}
+            <option value="" disabled>
+              More Cities Coming Soon
+            </option>
+          </select>
+        </div>
+      </form>
       <style jsx>{`
-        section {
+        section, form {
           width: 100%;
           display: flex;
           justify-content: space-between;
@@ -80,25 +107,25 @@ export default function Search() {
         div {
           width: 49%;
         }
-        input, select {
+        input,
+        select {
           width: 100%;
           padding-left: 2.5em;
           position: relative;
         }
-        .location_option:hover, option:focus {
+        .location_option:hover,
+        option:focus {
           background-color: pink;
         }
         .search {
-          background-image: url('/icons/search.svg');
+          background-image: url("/icons/search.svg");
           background-repeat: no-repeat;
           background-position: 8px center;
-          
         }
         .location {
-          background-image: url('/icons/place.svg'), url('/icons/expand.svg');
+          background-image: url("/icons/place.svg"), url("/icons/expand.svg");
           background-repeat: no-repeat;
           background-position: 8px center, 97% center;
-        
         }
         @media only screen and (max-width: 767px) {
           section {

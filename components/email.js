@@ -1,23 +1,49 @@
 import Image from "next/image";
+import { useState } from "react";
 
 export default function EmailSignup() {
+  const [email, setEmail] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const signUp = async (e) => {
+    e.preventDefault()
+    fetch("/api/newsletter", {
+      method: 'PUT',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({email: email}),
+    });
+    setSuccess(true);
+  };
+
   return (
     <div className="signup">
-      <div style={{ display: 'flex', alignItems: 'start' }}>
+      <div style={{ display: "flex", alignItems: "start" }}>
         <Image
           src={`/icons/waving.svg`}
           alt={`waving hand`}
           width={30}
           height={30}
-          
         />
-        <h4 style={{ marginTop: '3px', marginLeft: '4px' }}>Hey Junior!</h4>
+        <h4 style={{ marginTop: "3px", marginLeft: "4px" }}>Hey Junior!</h4>
       </div>
-      <p>Subscribe to get a bi-weekly email of new jobs</p>
-      <div className="form">
-        <input className="input" placeholder="jane@email.com"></input>
-        <button className="button">Subscribe</button>
-      </div>
+      <p>Subscribe to get a weekly email of new jobs</p>
+      <form className="form" onSubmit={signUp}>
+        {success ? (
+          <span className="success" >Thanks! You're Signed Up!</span>
+        ) : (
+          <>
+            <input
+            name="email"
+              type="email"
+              className="input"
+              placeholder="jane@email.com"
+              autoComplete="true"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <button className="button">Subscribe</button>{" "}
+          </>
+        )}
+      </form>
 
       <style jsx>{`
         .signup {
@@ -26,6 +52,11 @@ export default function EmailSignup() {
           color: #f4f2f2;
           border-radius: 8px;
           padding: 1.25em 1em;
+        }
+        .success {
+          font-weight: 700;
+          font-size: 0.875rem;
+          margin-left: .25em;
         }
         @media only screen and (max-width: 767px) {
           .signup {

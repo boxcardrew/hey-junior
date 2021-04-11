@@ -128,7 +128,7 @@ export default function Search() {
           background-position: 8px center, 97% center;
         }
         @media only screen and (max-width: 767px) {
-          section {
+          section, form {
             flex-direction: column;
             align-items: center;
             margin-bottom: 2em;

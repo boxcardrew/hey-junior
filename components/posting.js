@@ -12,12 +12,18 @@ const createMarkup = (desc) => {
 
 export default function Posting({ post }) {
   return (
-    <details className={post.featured ? "featured" : ""}>
+    <details className={post.featured | post.highlight ? "featured" : ""}>
       <summary>
-        <div className={post.featured ? "card featured" : "card"}>
+        <div className={post.featured | post.highlight ? "card featured" : "card"}>
           
             <div className="logo">
-              <div className=""><img src={`//logo.clearbit.com/${post.companyWebsite}?size=50`} /></div>
+              <div className="">
+              {post.featured ? 
+                <img src={`//logo.clearbit.com/${post.companyWebsite}?size=50`} />
+              : 
+                <div className="img-default">{post.company.slice(0, 1)}</div>
+              }
+              </div>
             </div>
             <div className="company">
               <h4>{post.title}</h4>
@@ -42,7 +48,7 @@ export default function Posting({ post }) {
           </div>
           <div className="apply">
             
-              <a href={post.applyURL} className={post.featured ? "button light" : "button"}>
+              <a href={post.applyURL} className={post.featured | post.highlight ? "button light" : "button"}>
                 Apply Now
               </a>
             
@@ -161,7 +167,7 @@ export default function Posting({ post }) {
           background: var(--orange);
           color: var(--white);
         }
-        .featured.card::after {
+        .promoted.card::after {
           content: "Promoted";
           position: absolute;
           top: 4px;
@@ -205,7 +211,7 @@ export default function Posting({ post }) {
             grid-column: 2/4;
           }
           .company-location {
-            display: flex;
+            
           }
           .company-location p:first-of-type {
             margin-right: 0.5em;

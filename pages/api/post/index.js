@@ -11,7 +11,6 @@ export default async function handle(req, res) {
   const today = Date.now()
   const currentDate = new Date(today);
   const validDate = currentDate.setDate(currentDate.getDate() + 30);
-  console.log(validDate)
   const result = await prisma.jobPosting.create({
     data: {
       title: values.jobTitle,

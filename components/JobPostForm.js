@@ -16,55 +16,57 @@ import ExamplePosting from "./examplePost";
 import { useRouter } from "next/router"
 
 const citiesList = [
+  "Alabama",
+  "Alaska",
+  "Phoenix-Mesa-Chandler, AZ",
   "Los Angeles-Long Beach-Anaheim, CA",
-  "Chicago-Naperville-Elgin, IL-IN-WI",
-  "New York-Newark-Jersey City, NY-NJ-PA",
-  "Dallas-Fort Worth-Arlington, TX",
-  "Houston-The Woodlands-Sugar Land, TX",
+  "Riverside-San Bernardino-Ontario, CA",
+  "Sacramento-Roseville-Folsom, CA",
+  "San Diego-Chula Vista-Carlsbad, CA",
+  "San Francisco-Oakland-Berkeley, CA",
+  "San Jose-Sunnyvale-Santa Clara, CA",
+  "Denver-Aurora-Lakewood, CO",
+  "Hartford-East Hartford-Middletown, CT",
   "Washington-Arlington-Alexandria, DC-VA-MD-WV",
   "Miami-Fort Lauderdale-Pompano Beach, FL",
-  "Philadelphia-Camden-Wilmington, PA-NJ-DE-MD",
-  "Atlanta-Sandy Springs-Alpharetta, GA",
-  "Phoenix-Mesa-Chandler, AZ",
-  "Boston-Cambridge-Newton, MA-NH",
-  "San Francisco-Oakland-Berkeley, CA",
-  "Riverside-San Bernardino-Ontario, CA",
-  "Detroit-Warren-Dearborn, MI",
-  "Seattle-Tacoma-Bellevue, WA",
-  "Minneapolis-St. Paul-Bloomington, MN-WI",
-  "San Diego-Chula Vista-Carlsbad, CA",
-  "Tampa-St. Petersburg-Clearwater, FL",
-  "Denver-Aurora-Lakewood, CO",
-  "St. Louis, MO-IL",
-  "Baltimore-Columbia-Towson, MD",
-  "Charlotte-Concord-Gastonia, NC-SC",
-  "Orlando-Kissimmee-Sanford, FL",
-  "San Antonio-New Braunfels, TX",
-  "Portland-Vancouver-Hillsboro, OR-WA",
-  "Sacramento-Roseville-Folsom, CA",
-  "Pittsburgh, PA",
-  "Las Vegas-Henderson-Paradise, NV",
-  "Austin-Round Rock-Georgetown, TX",
-  "Cincinnati, OH-KY-IN",
-  "Kansas City, MO-KS",
-  "Columbus, OH",
-  "Indianapolis-Carmel-Anderson, IN",
-  "Cleveland-Elyria, OH",
-  "San Jose-Sunnyvale-Santa Clara, CA",
-  "Nashville-Davidson--Murfreesboro--Franklin, TN",
-  "Virginia Beach-Norfolk-Newport News, VA-NC",
-  "Providence-Warwick, RI-MA",
-  "Milwaukee-Waukesha, WI",
   "Jacksonville, FL",
-  "Oklahoma City, OK",
-  "Raleigh-Cary, NC",
-  "Memphis, TN-MS-AR",
-  "Richmond, VA",
-  "New Orleans-Metairie, LA",
+  "Orlando-Kissimmee-Sanford, FL",
+  "Tampa-St. Petersburg-Clearwater, FL",
+  "Atlanta-Sandy Springs-Alpharetta, GA",
+  "Chicago-Naperville-Elgin, IL-IN-WI",
+  "Indianapolis-Carmel-Anderson, IN",
   "Louisville/Jefferson County, KY-IN",
-  "Salt Lake City, UT",
-  "Hartford-East Hartford-Middletown, CT",
+  "New Orleans-Metairie, LA",
+  "Baltimore-Columbia-Towson, MD",
+  "Boston-Cambridge-Newton, MA-NH",
+  "Detroit-Warren-Dearborn, MI",
+  "Minneapolis-St. Paul-Bloomington, MN-WI",
+  "Kansas City, MO-KS",
+  "St. Louis, MO-IL",
+  "Las Vegas-Henderson-Paradise, NV",
+  "New York-Newark-Jersey City, NY-NJ-PA",
   "Buffalo-Cheektowaga, NY",
+  "Charlotte-Concord-Gastonia, NC-SC",
+  "Raleigh-Cary, NC",
+  "Columbus, OH",
+  "Cincinnati, OH-KY-IN",
+  "Cleveland-Elyria, OH",
+  "Oklahoma City, OK",
+  "Portland-Vancouver-Hillsboro, OR-WA",
+  "Philadelphia-Camden-Wilmington, PA-NJ-DE-MD",
+  "Pittsburgh, PA",
+  "Providence-Warwick, RI-MA",
+  "Nashville-Davidson--Murfreesboro--Franklin, TN",
+  "Memphis, TN-MS-AR",
+  "Dallas-Fort Worth-Arlington, TX",
+  "San Antonio-New Braunfels, TX",
+  "Austin-Round Rock-Georgetown, TX",
+  "Houston-The Woodlands-Sugar Land, TX",
+  "Salt Lake City, UT",
+  "Richmond, VA",
+  "Virginia Beach-Norfolk-Newport News, VA-NC",
+  "Seattle-Tacoma-Bellevue, WA",
+  "Milwaukee-Waukesha, WI",
 ];
 
 const Editor = dynamic(
@@ -393,15 +395,15 @@ export default function JobPostForm() {
           jobTitle: Yup.string()
             .min(10, "A little more description, try 10 chracters or more")
             .required("Required"),
-          location: Yup.string().min(3, "Please Enter a Valid Location"),
-          // .required("Required"),
-          howToApply: Yup.string().url("Enter a valid URL"),
-          // .required("Required"),
+          location: Yup.string().min(3, "Please Enter a Valid Location")
+          .required("Required"),
+          howToApply: Yup.string().url("Enter a valid URL")
+          .required("Required"),
           jobDescription: Yup.string().min(
             10,
             "Please enter a job description"
-          ),
-          // .required("Required"),
+          )
+          .required("Required"),
           category: Yup.string()
             .oneOf(
               [
@@ -416,9 +418,9 @@ export default function JobPostForm() {
               "Invalid Job Type"
             )
             .required("Required"),
-          jobType: Yup.string().required("Please select a Job Type"),
-          jobType: Yup.string().required("Please select a Job Type"),
-          jobType: Yup.string().required("Please select a Job Type"),
+          companyName: Yup.string().required("Please Enter a Company Name"),
+          companyEmail: Yup.string().email().required("Please Enter a Company Email"),
+          companyWebsite: Yup.string().url("Enter a valid URL").required(),
         })}
         onSubmit={handleSubmit}
       >
@@ -650,6 +652,7 @@ export default function JobPostForm() {
                     label="Company Website"
                     name="companyWebsite"
                     type="text"
+                    required
                   />
                 </div>
                 <div className={styles.halfInput}>

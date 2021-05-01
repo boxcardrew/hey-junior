@@ -38,6 +38,7 @@ export default function EmailSignup() {
               className="input"
               placeholder="jane@email.com"
               autoComplete="true"
+              required
               onChange={(e) => setEmail(e.target.value)}
             />
             <button className="button">Subscribe</button>{" "}

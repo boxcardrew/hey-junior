@@ -1,11 +1,28 @@
 import Footer from "./footer";
 import Nav from "./nav";
+import Head from "next/head";
 
-export default function Layout({children}) {
+export default function Layout({ children }) {
   return (
     <div>
+      <Head>
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@heyjuniorjobs" />
+        <meta name="twitter:creator" content="@boxcardrew" />
+        <meta name="twitter:url" content="https://heyjunior.co" />
+        <meta name="twitter:title" content="Hey Junior - Jobs to start your next career" />
+        <meta
+          name="twitter:description"
+          content="Hey Junior - Junior jobs for junior everythings. Junior developers, designers, marketers, support staff, sales, and more"
+        />
+        <meta name="twitter:image" content="/header.png" />
+        <meta
+          name="twitter:image:alt"
+          content="Hey Junior - Junior Jobs for Junior Everythings"
+        />
+      </Head>
       <div className="container">
-      <Nav />
+        <Nav />
         {children}
       </div>
       <Footer />

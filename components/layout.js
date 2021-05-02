@@ -15,7 +15,7 @@ export default function Layout({ children }) {
           name="twitter:description"
           content="Hey Junior - Junior jobs for junior everythings. Junior developers, designers, marketers, support staff, sales, and more"
         />
-        <meta name="twitter:image" content="/header.png" />
+        <meta name="twitter:image" content="https://heyjunior.co/header.png" />
         <meta
           name="twitter:image:alt"
           content="Hey Junior - Junior Jobs for Junior Everythings"

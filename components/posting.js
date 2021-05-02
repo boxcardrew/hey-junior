@@ -112,7 +112,7 @@ export default function Posting({ post }) {
           align-items: center;
           margin-bottom: 1.5em;
           display: grid;
-          grid-template-columns: 5em 3fr 1fr 1fr 1fr;
+          grid-template-columns: 5em 3fr 2fr 1fr 1fr;
         }
         .img-default {
           background: var(--orange);
@@ -158,7 +158,6 @@ export default function Posting({ post }) {
         }
         .tags {
           display: flex;
-          max-width: 100px;
         }
         .apply {
           margin-left: auto;

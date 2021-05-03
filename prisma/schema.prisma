@@ -11,26 +11,26 @@ generator client {
 }
 
 model JobPosting {
-  id  Int @default(autoincrement()) @id
-  title String
-  category String
-  company String
-  description String
-  featured Boolean?
-  highlight Boolean?
-  hasLogo Boolean?
-  remote Boolean?
-  jobType String
-  tags String[]
-  location Json?
-  createdAt String
-  updatedAt String?
-  validThrough String?
-  salary Int?
-  applyURL String
-  companyEmail String
-  companyStatement String?
-  companyWebsite String?
-  companyLogo String?
+  id                 Int      @id @default(autoincrement())
+  title              String
+  category           String
+  company            String
+  description        String
+  featured           Boolean?
+  highlight          Boolean?
+  hasLogo            Boolean?
+  remote             Boolean?
+  jobType            String
+  tags               String[]
+  location           Json?
+  createdAt          String
+  updatedAt          String?
+  validThrough       String?
+  salary             Int?
+  applyURL           String
+  companyEmail       String
+  companyStatement   String?
+  companyWebsite     String?
+  companyLogo        String?
   companyDescription String?
 }

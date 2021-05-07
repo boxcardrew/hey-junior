@@ -137,7 +137,11 @@ export default function Post(props) {
             </article>
             <aside>
               
-              <div className="img-default"><img src={`//logo.clearbit.com/${props.companyWebsite}?size=50`} /></div>
+            {props.featured ? 
+                <img src={`//logo.clearbit.com/${props.companyWebsite}?size=50`} />
+              : 
+                <div className="img-default">{props.company.slice(0, 1)}</div>
+              }
               <span>{props.company}</span>
               {props.companyWebsite ? (
                 <a href={`https://${props.companyWebsite}`} target="_">

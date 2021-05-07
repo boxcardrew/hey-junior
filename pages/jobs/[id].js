@@ -43,6 +43,21 @@ export default function Post(props) {
         <title>
           {props.title} - {props.company} | HeyJunior
         </title>
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@heyjuniorjobs" />
+        <meta name="twitter:creator" content="@boxcardrew" />
+        <meta name="twitter:url" content={`https://heyjunior.co/jobs${props.id}`} />
+        <meta name="twitter:title" content={`${props.title} | ${props.company} - Hey Junior `} />
+        <meta
+          name="twitter:description"
+          content="Hey Junior - Junior jobs for junior everythings. Junior developers, designers, marketers, support staff, sales, and more"
+        />
+        <meta name="twitter:image" content="https://heyjunior.co/header.png" />
+        <meta
+          name="twitter:image:alt"
+          content="Hey Junior - Junior Jobs for Junior Everythings"
+        />
+
       </Head>
       <div className="main">
         <Nav />

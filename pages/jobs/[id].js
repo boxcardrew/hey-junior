@@ -46,7 +46,7 @@ export default function Post(props) {
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@heyjuniorjobs" />
         <meta name="twitter:creator" content="@boxcardrew" />
-        <meta name="twitter:url" content={`https://heyjunior.co/jobs${props.id}`} />
+        <meta name="twitter:url" content={`https://heyjunior.co/jobs/${props.id}`} />
         <meta name="twitter:title" content={`${props.title} | ${props.company} - Hey Junior `} />
         <meta
           name="twitter:description"

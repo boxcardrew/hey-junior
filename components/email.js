@@ -49,8 +49,8 @@ export default function EmailSignup() {
       <style jsx>{`
         .signup {
           width: 49%;
-          background: var(--green);
-          color: #f4f2f2;
+          background: var(--dark-green);
+          color: var(--white);
           border-radius: 8px;
           padding: 1.25em 1em;
         }

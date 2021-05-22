@@ -19,14 +19,14 @@ export default function Posting({ post }) {
             <div className="logo">
               <div className="">
               {post.featured ? 
-                <img src={`//logo.clearbit.com/${post.companyWebsite}?size=50`} />
+                <img src={`//logo.clearbit.com/${post.companyWebsite}?size=75`} height="50px" width="50px" alt={post.company} />
               : 
                 <div className="img-default">{post.company.slice(0, 1)}</div>
               }
               </div>
             </div>
             <div className="company">
-              <h4>{post.title}</h4>
+              <h5>{post.title}</h5>
               <div className="company-location">
                 <p>{post.company}</p>
                 
@@ -74,7 +74,8 @@ export default function Posting({ post }) {
           list-style: none;
           cursor: pointer;
         }
-        summary::-webkit-details-marker {
+        
+        summary::marker {
           display: none;
         }
         details {
@@ -129,8 +130,8 @@ export default function Posting({ post }) {
         .logo {
           
         }
-        .company {
-          
+        .company h5 {
+          font-size: 1rem;
         }
         .company * {
           margin-bottom: 0.25em;

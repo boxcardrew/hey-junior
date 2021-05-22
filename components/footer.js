@@ -72,7 +72,7 @@ export default function Footer() {
             </li>
             {socialLinks.map(({ name, url, icon }) => (
               <li key={name}>
-                <a href={url} target="_blank">
+                <a href={url} target="_blank" rel="noreferrer">
                   <Image src={icon} alt={name} width={25} height={25} />
                 </a>
               </li>
@@ -84,7 +84,7 @@ export default function Footer() {
         <ul>
           <li>Copyright © {new Date().getFullYear()}</li> 
           {legals.map(({ name, url }) => (
-            <><span>•</span><li key={name}><Link href={url}><a>{name}</a></Link></li></> 
+            <li key={name}><Link href={url}><a>{name}</a></Link></li>
           ))}
         </ul>
       </section>

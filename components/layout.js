@@ -6,6 +6,7 @@ export default function Layout({ children }) {
   return (
     <div>
       <Head>
+        <meta name="description" content="Junior jobs for junior everythings. Find your first junior developer, designer, marketer, support, and more job." />
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@heyjuniorjobs" />
         <meta name="twitter:creator" content="@boxcardrew" />

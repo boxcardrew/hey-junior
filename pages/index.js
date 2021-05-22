@@ -79,9 +79,9 @@ const Home = ( {jobs} ) => {
           <h2>Trusted by companies</h2>
         </div> */}
         <div style={{ width: "100%" }}>
-          <h3 style={{ fontSize: "1.5rem", marginBottom: "1em" }}>
+          <h2 style={{ fontSize: "1.5rem", marginBottom: "1em" }}>
             New Job Posts
-          </h3>
+          </h2>
           <div>
             <ul>
               {jobs.map((post) => (
@@ -89,27 +89,6 @@ const Home = ( {jobs} ) => {
                   <Posting post={post} />
                 </li>
               ))}
-              {/* <li>
-                <Posting featured="true" />
-              </li>
-              <li>
-                <Posting featured="true" />
-              </li>
-              <li>
-                <Posting featured="true" />
-              </li>
-              <li>
-                <Posting />
-              </li>
-              <li>
-                <Posting />
-              </li>
-              <li>
-                <Posting />
-              </li>
-              <li>
-                <Posting />
-              </li> */}
             </ul>
           </div>
         </div>

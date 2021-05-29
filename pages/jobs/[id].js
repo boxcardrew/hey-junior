@@ -5,6 +5,7 @@ import Link from "next/link";
 import Nav from "../../components/nav";
 import getDate from "../../utils/getDate";
 import Footer from "../../components/footer";
+import Layout from "../../components/layout";
 
 // import Posting from "../../components/posting";
 
@@ -20,7 +21,7 @@ export const getServerSideProps = async ({ params }) => {
 };
 
 export default function Post(props) {
-  console.log(props);
+  
   const category = "Developer";
   const share = [
     {
@@ -37,8 +38,7 @@ export default function Post(props) {
     { name: "Share to Twitter", src: "/icons/cib_twitter.svg", url: "/" },
   ];
   return (
-    <>
-    <div className="container">
+    <div>
       <Head>
         <title>
           {props.title} - {props.company} | HeyJunior
@@ -59,9 +59,8 @@ export default function Post(props) {
         />
 
       </Head>
-      <div className="main">
-        <Nav />
-        <div className="page-nav">
+      <Layout>
+      <div className="page-nav">
           <Link href="/">
             <a>Back to Job Postings</a>
           </Link>
@@ -144,7 +143,7 @@ export default function Post(props) {
               }
               <span>{props.company}</span>
               {props.companyWebsite ? (
-                <a href={`https://${props.companyWebsite}`} target="_">
+                <a href={props.companyWebsite} target="_">
                   View Website
                 </a>
               ) : null}
@@ -163,7 +162,7 @@ export default function Post(props) {
           <Posting />
           <Posting /> */}
         </div>
-      </div>
+      
         
       <style jsx>{`
         .img-default {
@@ -328,12 +327,13 @@ export default function Post(props) {
           }
           .page-nav span,
           .page-nav a {
-            font-size: 0.625rem;
+            font-size: 0.825rem;
           }
         }
       `}</style>
-    <Footer />
-    </div>
-    </>
+      
+      </Layout>
+      </div>
+  
   );
 }

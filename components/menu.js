@@ -50,7 +50,7 @@ export default function Menu() {
           display: flex;
           justify-content: space-between;
           overflow-x: auto;
-          width: 800px;
+          width: 795px;
           margin-bottom: 4em;
         }
         @media only screen and (max-width: 767px) {
